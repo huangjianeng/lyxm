@@ -1,12 +1,13 @@
 <template>
 	<div class="box">
 		<div class="btn_box">
-			<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
+			<el-button type="primary" size="small" @click="addItem">用户新增</el-button>
 		</div>
 		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="date" label="部门" min-width="180"> </el-table-column>
-			<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
-			<el-table-column prop="address" label="赋权上级单位"> </el-table-column>
+			<el-table-column prop="date" label="所属部门" min-width="180"> </el-table-column>
+			<el-table-column prop="name" label="用户名称" min-width="180"> </el-table-column>
+			<!-- <el-table-column prop="address" label="赋权上级单位"> </el-table-column> -->
+
 		</el-table>
 		<div class="page_box">
 			<el-pagination
@@ -21,13 +22,13 @@
 		</div>
 		<el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formLabelAlign">
-				<el-form-item label="部门">
+				<el-form-item label="所属部门">
 					<el-input v-model="formData.name"></el-input>
 				</el-form-item>
-				<el-form-item label="事项名称">
+				<el-form-item label="用户名称">
 					<el-input v-model="formData.region"></el-input>
 				</el-form-item>
-				<el-form-item label="赋权上级单位">
+				<el-form-item label="密码">
 					<el-input v-model="formData.type"></el-input>
 				</el-form-item>
 			</el-form>
@@ -57,12 +58,12 @@ export default {
 			tableData: [
 				{
 					date: '退役军人服务站（文化站）',
-					name: '娱乐场所从事娱乐场所经营活动审批',
+					name: '张三',
 					address: '浏阳市文体局',
 				},
 				{
 					date: '退役军人服务站（文化站）',
-					name: '营业性演出审批',
+					name: '李四',
 					address: '浏阳市文体局',
 				},
 				{
@@ -84,6 +85,9 @@ export default {
 				arr.push(...this.tableData)
 			}
 			this.tableData = arr
+		},
+		handleClick(){
+			this.showModel()
 		},
 		addItem() {
 			this.dialogVisible = true

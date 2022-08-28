@@ -5,7 +5,6 @@
 			<publish-main></publish-main>
 		</div>
 		<div class="content_wrap">
-            111
 			<router-view></router-view>
 		</div>
 	</div>
@@ -32,15 +31,16 @@ export default {
 .main {
 	// display: flex;
 	position: absolute;
+	z-index: 1;
 	left: 0;
 	top: 70px;
 	height: 100%;
-	width: 400px;
+	width:200px;
 }
 .content_wrap {
     position: relative;
     box-sizing: border-box;
-    padding-left: 400px;
+    padding-left: 200px;
     padding-top: 70px;
     height: 100%;
     width: 100%;

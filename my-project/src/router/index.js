@@ -28,15 +28,19 @@ const routes = [
         component: () => import('@/views/matters-list.vue'),
         meta: { title: '事项列表' },
       },
+      {
+        path: '/userList',
+        name: '用户列表',
+        component: () => import('@/views/user-list.vue'),
+        meta: { title: '用户列表' },
+      },
     ]
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    path: '/login',
+    name: '登录',
+    component: () => import('@/views/login.vue'),
+    meta: { title: '登录' },
   }
 ]
 

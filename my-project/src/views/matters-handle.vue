@@ -6,7 +6,7 @@
 					><div class="grid-content bg-purple">
 						<div>统计月份：</div>
 						<el-date-picker
-							v-model="search.date"
+							v-model="searchData.month"
 							type="monthrange"
 							range-separator="至"
 							start-placeholder="开始月份"
@@ -18,8 +18,12 @@
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="justify-content: flex-end">
-						<el-button type="primary" size="small" @click="addItem">查询</el-button>
-						<!-- <el-button type="primary" size="small" @click="addItem">事项新增</el-button> -->
+						<el-button type="primary" size="small" @click="addItem" style="margin-right: 6px"
+							>查询</el-button
+						>
+						<ExcelExport filename="excel" :sheet="sheet">
+							<el-button class="table_down" size="small" type="primary">导出 </el-button>
+						</ExcelExport>
 					</div>
 				</el-col>
 			</el-row>
@@ -55,7 +59,12 @@
 					<el-input v-model="formData.region"></el-input>
 				</el-form-item>
 				<el-form-item label="申报月份">
-					<el-date-picker style="width:100%" v-model="formData.type" type="month" placeholder="选择月">
+					<el-date-picker
+						style="width: 100%"
+						v-model="formData.type"
+						type="month"
+						placeholder="选择月"
+					>
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="月统计数量">
@@ -72,16 +81,25 @@
 
 <script>
 // import HelloWorld from '@/components/HelloWorld.vue'
+import { ExcelExport } from 'pikaz-excel-js'
+
 export default {
-	name: 'matters-list',
+	name: 'matters-handle',
 	components: {
-		// HelloWorld
+		ExcelExport,
 	},
 	data() {
 		return {
+			sheet: [
+				{
+					tHeader: ['工程编号', '委托单位', '清单名称', '收费金额'],
+					keys: ['date', 'name', 'address', 'totalMoney'],
+					table: [],
+				},
+			],
 			dialogVisible: false,
-			search: {
-				date: '',
+			searchData: {
+				month: '',
 			},
 			formData: {
 				name: '',
@@ -113,12 +131,16 @@ export default {
 				arr.push(...this.tableData)
 			}
 			this.tableData = arr
+			this.sheet[0].table = arr
 		},
 		handleClick() {
 			this.showModel()
 		},
 		addItem() {
-			this.dialogVisible = true
+			this.$axios.get('/user/userinfo').then((res) => {
+				console.log(res)
+			})
+			// this.dialogVisible = true
 		},
 		showModel() {
 			this.dialogVisible = true
@@ -159,4 +181,3 @@ export default {
 	font-size: 14px;
 }
 </style>
-

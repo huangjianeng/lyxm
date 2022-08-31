@@ -1,23 +1,33 @@
 <template>
 	<div class="box">
-		<div class="btn_box">
-			<el-button type="primary" size="small" @click="addItem">用户新增</el-button>
-		</div>
-		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="date" label="所属部门" min-width="180"> </el-table-column>
-			<el-table-column prop="name" label="用户名称" min-width="180"> </el-table-column>
-			<!-- <el-table-column prop="address" label="赋权上级单位"> </el-table-column> -->
-		</el-table>
-		<div class="page_box">
-			<el-pagination
-				@size-change="handleSizeChange"
-				@current-change="handleCurrentChange"
-				:current-page="currentPage"
-				:page-size="10"
-				layout="total, sizes, prev, pager, next, jumper"
-				:total="11"
+		<div class="content_box">
+			<div
+				class="text_item"
+				v-for="(v, i) in tableData"
+				:style="{ 'align-items': v.name == userName ? 'self-end' : 'self-start' }"
+				:key="i"
 			>
-			</el-pagination>
+				<div class="top">
+					<div class="name">{{ v.name }}</div>
+					<div>{{ v.time }}</div>
+				</div>
+				<div class="text">
+					{{ v.text }}
+				</div>
+			</div>
+		</div>
+		<div class="input_box">
+			<el-input
+				type="textarea"
+				rows="3"
+				style="width: 730px"
+				placeholder="请输入内容"
+				v-model="textarea"
+			>
+			</el-input>
+			<div style="margin-left: 10px">
+				<el-button type="primary" size="small" @click="send">发送</el-button>
+			</div>
 		</div>
 		<el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
@@ -48,6 +58,8 @@ export default {
 	},
 	data() {
 		return {
+			userName: '张三',
+			textarea: '',
 			dialogVisible: false,
 			formData: {
 				name: '',
@@ -56,28 +68,36 @@ export default {
 			},
 			tableData: [
 				{
-					date: '退役军人服务站（文化站）',
+					text: '你好',
 					name: '张三',
-					address: '浏阳市文体局',
+					time: '2012-12-15',
 				},
 				{
-					date: '退役军人服务站（文化站）',
+					text: '你也好啊',
 					name: '李四',
-					address: '浏阳市文体局',
+					time: '2012-12-15',
 				},
 				{
-					date: '自然资源所',
+					text: '哈哈哈哈哈',
 					name: '王五',
-					address: '市自然资源局',
+					time: '2012-12-15',
 				},
 			],
 			currentPage: 1,
 		}
 	},
 	mounted() {
-		this.init()
+		// this.init()
 	},
 	methods: {
+		send() {
+			this.tableData.push({
+				text: this.textarea,
+				name: '张三',
+				time: '2012-12-15',
+			})
+			this.textarea = ''
+		},
 		init() {
 			let arr = []
 			for (let i = 0; i < 4; i++) {
@@ -107,6 +127,51 @@ export default {
 }
 </script>
 <style scoped>
+.content_box {
+	border: 1px solid #dcdfe6;
+	border-radius: 10px;
+	height: 500px;
+	width: 800px;
+	overflow: auto;
+	padding: 10px;
+	box-sizing: border-box;
+	margin-bottom: 10px;
+}
+/deep/ .content_box::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+/deep/ .content_box::-webkit-scrollbar-thumb {
+	background-color: #a1a3a9;
+	border-radius: 3px;
+}
+.top {
+	display: flex;
+	height: 30px;
+	align-items: center;
+	font-size: 12px;
+}
+.text_item {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 6px;
+}
+.top .name {
+	color: #000;
+	margin-right: 10px;
+	font-size: 16px;
+}
+.text {
+	display: flex;
+	padding: 10px 50px;
+	background-color: #dcdfe6;
+	border-radius: 10px;
+}
+.input_box {
+	display: flex;
+}
+
 .box {
 	margin: 10px;
 }

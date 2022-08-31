@@ -20,7 +20,7 @@
 			</el-pagination>
 		</div>
 		<el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-			<el-form label-position="right" label-width="120px" :model="formLabelAlign">
+			<el-form label-position="right" label-width="120px" :model="formData">
 				<el-form-item label="部门">
 					<el-input v-model="formData.name"></el-input>
 				</el-form-item>
@@ -118,4 +118,3 @@ export default {
 	padding: 10px;
 }
 </style>
-

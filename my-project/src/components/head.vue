@@ -1,12 +1,31 @@
 <template>
-	<div class="page_head">
-		<div class="df_ac">
-			<span class="page_head_text">统计系统</span>
+	<div class="page_wrap">
+		<div class="page_head">
+			<div class="df_ac">
+				<span class="page_head_text">统计系统</span>
+			</div>
+			<div class="head_right_box">
+				<i class="el-icon-message-solid mes_icon" @click="showMessage">
+					<span v-if="messageTotal > 0" class="tips">{{ messageTotal }}</span>
+				</i>
+				<span class="mr10" style="margin-right: 10px">{{ userName }}</span>
+				<span>{{ userDepartment }}</span>
+			</div>
 		</div>
-		<div class="head_right_box">
-			<span class="mr10" style="margin-right:10px">{{ userName }}</span>
-			<span>{{ userDepartment }}</span>
-		</div>
+		<el-drawer
+			title="预警提醒"
+			:visible.sync="drawer"
+			:with-header="false"
+			size="20%"
+			:before-close="handleDrawerClose"
+		>
+			<div class="drawer_head">预警消息列表</div>
+			<div class="mes_box">
+				<div class="item" v-for="(v, i) in list" :key="i">
+					<div>一般事项{{ v }}已三个月未申报</div>
+				</div>
+			</div>
+		</el-drawer>
 	</div>
 </template>
 <script>
@@ -18,6 +37,9 @@ export default {
 	components: {},
 	data() {
 		return {
+			list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+			messageTotal: 10,
+			drawer: false,
 			admin_level: null,
 			total: 0,
 			userName: '张三',
@@ -27,17 +49,29 @@ export default {
 	mounted() {
 		// this.init()
 	},
-	methods: {},
+	methods: {
+		showMessage() {
+			this.drawer = true
+		},
+		handleDrawerClose() {
+			this.drawer = false
+		},
+	},
 }
 </script>
 
 <style scoped>
+.page_wrap {
+	position: relative;
+	left: 0;
+	top: 0;
+}
 .page_head {
 	border-width: 0px;
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	z-index: 20;
+	z-index: 1;
 	width: 100%;
 	height: 70px;
 	display: flex;
@@ -98,5 +132,49 @@ export default {
 	border: 1px solid white;
 	padding: 5px 10px;
 	border-radius: 6px;
+}
+.drawer_head {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 30px;
+}
+.mes_icon {
+	font-size: 18px;
+	margin-right: 10px;
+	cursor: pointer;
+	position: relative;
+}
+.tips {
+	position: absolute;
+	background-color: red;
+	color: white;
+	right: -10px;
+	top: -14px;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	text-align: center;
+	line-height: 20px;
+	font-size: 12px;
+	/* background-color: #409eff; */
+}
+.drawer_head {
+	font-size: 18px;
+	padding: 30px 0;
+	font-weight: 500;
+}
+.mes_box {
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+}
+.mes_box .item {
+	display: flex;
+	height: 40px;
+	padding: 0 10px;
+	align-items: center;
+	justify-content: flex-start;
+	border-bottom: 1px solid #dcdfe6;
 }
 </style>

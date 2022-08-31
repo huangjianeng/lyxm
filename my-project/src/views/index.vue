@@ -34,15 +34,15 @@ export default {
 	z-index: 1;
 	left: 0;
 	top: 70px;
-	height: 100%;
-	width:200px;
+	height: calc(100% - 70px);
+	width: 200px;
 }
 .content_wrap {
-    position: relative;
-    box-sizing: border-box;
-    padding-left: 200px;
-    padding-top: 70px;
-    height: 100%;
-    width: 100%;
+	position: relative;
+	box-sizing: border-box;
+	padding-left: 200px;
+	padding-top: 70px;
+	height: 100%;
+	width: 100%;
 }
 </style>

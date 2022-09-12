@@ -21,9 +21,12 @@
 		>
 			<div class="drawer_head">预警消息列表</div>
 			<div class="mes_box">
-				<div class="item" v-for="(v, i) in list" :key="i">
-					<div>一般事项{{ v }}已三个月未申报</div>
-				</div>
+				<el-card class="box_card" v-for="(v, i) in list" :key="i">
+					<div class="item">
+						<div>一般事项{{ v }}已三个月未申报</div>
+						<div class="state">{{ v % 2 == 0 ? '已读' : '未读' }}</div>
+					</div>
+				</el-card>
 			</div>
 		</el-drawer>
 	</div>
@@ -163,18 +166,39 @@ export default {
 	font-size: 18px;
 	padding: 30px 0;
 	font-weight: 500;
+	border-bottom: 1px solid #dcdfe6;
 }
 .mes_box {
 	display: flex;
 	flex-direction: column;
 	padding: 10px;
 }
+/deep/ .el-drawer__body::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+/deep/ .el-drawer__body::-webkit-scrollbar-thumb {
+	background-color: #a1a3a9;
+	border-radius: 3px;
+}
+.mes_box .box_card {
+	margin: 10px 0;
+}
+.mes_box .state {
+	color: #409eff;
+	border: 1px dotted #409eff;
+	padding: 2px;
+	font-size: 14px;
+	border-radius: 5px;
+	cursor: pointer;
+}
 .mes_box .item {
 	display: flex;
-	height: 40px;
-	padding: 0 10px;
+	/* height: 40px; */
+	/* padding: 10px; */
 	align-items: center;
-	justify-content: flex-start;
-	border-bottom: 1px solid #dcdfe6;
+	justify-content: space-between;
+	/* box-shadow: 2px 2px #dcdfe6;
+	border: 1px solid #dcdfe6; */
 }
 </style>

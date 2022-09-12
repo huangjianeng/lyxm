@@ -25,7 +25,7 @@
 					placeholder="密码"
 				></el-input>
 			</el-form-item>
-			<el-row>
+			<!-- <el-row>
 				<el-col :span="12">
 					<el-form-item prop="code">
 						<el-input
@@ -39,7 +39,7 @@
 				<el-col :span="12" class="code-box">
 					<img :src="ruleForm.codeimg" alt="" class="codeimg"  />
 				</el-col>
-			</el-row>
+			</el-row> -->
 			<!-- <el-checkbox class="remember" v-model="rememberpwd">记住密码</el-checkbox> -->
 			<el-form-item style="width: 100%">
 				<el-button
@@ -95,10 +95,14 @@ export default {
 	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
-	padding-top: 10%;
+	/* padding-top: 10%; */
+	background-image: url("../assets/logo.webp");
 	background-repeat: no-repeat;
-	background-position: center right;
-	background-size: 100%;
+	background-position: center center;
+	background-size: 100% 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 .login-container {
 	border-radius: 10px;

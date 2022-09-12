@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import axios from 'axios'
+import axios from './utils/axios'
 require('../mock') //引入mock数据，关闭则注释该行
 Vue.use(ElementUI)
 Vue.config.productionTip = false

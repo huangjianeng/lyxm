@@ -53,7 +53,7 @@
 				:current-page="currentPage"
 				:page-size="10"
 				layout="total, sizes, prev, pager, next, jumper"
-				:total="11"
+				:total="total"
 			>
 			</el-pagination>
 		</div>
@@ -108,6 +108,7 @@ export default {
 				// area: '',
 				deptName: '',
 			},
+			total: 0,
 			pageParams: {
 				currentPage: 1,
 				pageSize: 10,
@@ -118,27 +119,27 @@ export default {
 	},
 	mounted() {
 		this.init()
-		
 	},
 	methods: {
 		init() {
 			this.getDeptName()
 			this.getData()
 		},
-		getData(){
+		getData() {
 			let params = {
 				...this.searchData,
 				...this.pageParams,
 			}
 			this.$axios.post('/matter/query', params).then((res) => {
 				console.log(res)
+				this.total = res.data.total
 				this.tableData = res.data.data
 			})
 		},
 		search() {
 			this.getData()
 		},
-		getDeptName(){
+		getDeptName() {
 			// GET /dept/query
 			this.$axios.get('/dept/query', {}).then(() => {
 				// this.$message({
@@ -160,7 +161,10 @@ export default {
 				deptId: 1,
 			}
 			// POST /matter/insert
-			this.$axios.post('/matter/insert', params).then(() => {})
+			this.$axios.post('/matter/insert', params).then(() => {
+				this.dialogVisible = false
+				this.getData()
+			})
 		},
 		handleClose() {
 			this.dialogVisible = false

@@ -24,10 +24,10 @@
 				<i class="el-icon-document"></i>
 				<span slot="title">高频事项统计</span>
 			</el-menu-item>
-			<el-menu-item index="/chatBox">
+			<!-- <el-menu-item index="/chatBox">
 				<i class="el-icon-menu"></i>
 				<span slot="title">聊天室</span>
-			</el-menu-item>
+			</el-menu-item> -->
 			<el-menu-item index="/userList">
 				<i class="el-icon-setting"></i>
 				<span slot="title">用户列表</span>

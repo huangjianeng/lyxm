@@ -2,7 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
 	publicPath: '/',
 	devServer: {
-		port: '9999',
+		port: '8081',
 		// 代理配置
 		proxy: {
 			// 这里的api 表示如果我们的请求地址有/api的时候,就出触发代理机制
@@ -15,8 +15,8 @@ module.exports = defineConfig({
 				// target: 'http://192.168.15.165:8081/', // 我们要代理的地址
 				changeOrigin: true, // 是否跨域 需要设置此值为true 才可以让本地服务代理我们发出请求
 				pathRewrite: {
-					'^/api': ''
-				}
+					'^/api': '',
+				},
 			},
 		},
 	},

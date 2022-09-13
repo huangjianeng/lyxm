@@ -11,6 +11,7 @@
 							range-separator="至"
 							start-placeholder="开始月份"
 							end-placeholder="结束月份"
+							:clearable="false"
 						>
 						</el-date-picker></div
 				></el-col>
@@ -35,9 +36,9 @@
 			<el-button type="primary" @click="addItem">事项新增</el-button>
 		</div> -->
 		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="date" label="部门" min-width="180"> </el-table-column>
-			<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
-			<el-table-column prop="address" label="月统计上报数量"> </el-table-column>
+			<el-table-column prop="deptName" label="部门" min-width="180"> </el-table-column>
+			<el-table-column prop="matterName" label="事项名称" min-width="180"> </el-table-column>
+			<el-table-column prop="amount" label="月统计上报数量"> </el-table-column>
 			<el-table-column fixed="right" label="操作" width="140">
 				<template slot-scope="scope">
 					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
@@ -52,7 +53,7 @@
 				:current-page="currentPage"
 				:page-size="10"
 				layout="total, sizes, prev, pager, next, jumper"
-				:total="11"
+				:total="total"
 			>
 			</el-pagination>
 		</div>
@@ -69,7 +70,7 @@
 							v-for="item in eventOptions"
 							:key="item.id"
 							:label="item.name"
-							:value="item"
+							:value="item.id"
 						>
 						</el-option>
 					</el-select>
@@ -77,7 +78,7 @@
 				<el-form-item label="申报月份">
 					<el-date-picker
 						style="width: 100%"
-						v-model="formData.mon"
+						v-model="formData.ym"
 						type="month"
 						placeholder="选择月"
 					>
@@ -115,7 +116,7 @@ export default {
 			],
 			dialogVisible: false,
 			searchData: {
-				month: [],
+				month: [new Date(), new Date()],
 				// name: '',
 				// area: '',
 				// deptName: '',
@@ -125,13 +126,14 @@ export default {
 				currentPage: 1,
 				pageSize: 10,
 			},
+			modelTitile:'新增',
 			formData: {
 				amount: '',
 				deptId: '',
 				deptName: '',
 				matterId: '',
 				matterName: '',
-				mon: '',
+				ym: '',
 			},
 			tableData: [],
 			currentPage: 1,
@@ -151,7 +153,8 @@ export default {
 		search() {
 			this.getData()
 		},
-		changeEvent(item) {
+		changeEvent(id) {
+			let item = this.eventOptions.find(v=>v.id == id) || {}
 			this.formData.deptId = item.deptId
 			this.formData.deptName = item.deptName
 			this.formData.matterId = item.id
@@ -183,15 +186,23 @@ export default {
 			// POST / declaration / query
 			console.log(this.searchData)
 			let params = {
-				startDate: this.searchData.month[0],
-				endDate: this.searchData.month[1],
-				...this.pageParams,
+				startDate:this.getYearMonth(this.searchData.month[0]),
+				endDate:this.getYearMonth(this.searchData.month[1]),
+				...this.pageParams
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
 				this.total = res.data.total
 				this.tableData = res.data.data
 			})
+		},
+		getYearMonth(date) {
+			let year = date.getFullYear()
+			let month = date.getMonth() + 1
+			if (month < 10) {
+				month = '0' + month
+			}
+			return year + month
 		},
 		handleClick() {
 			this.showModel()
@@ -201,7 +212,7 @@ export default {
 				deptName: '',
 				matterId: '',
 				matterName: '',
-				mon: '',
+				ym: '',
 			}
 		},
 		affirm() {
@@ -209,6 +220,7 @@ export default {
 				...this.formData,
 				amount: Number(this.formData.amount),
 				// deptId: 1,
+				ym:this.getYearMonth(this.formData.ym)
 			}
 			console.log(params)
 			// POST /matter/insert POST /declaration/save

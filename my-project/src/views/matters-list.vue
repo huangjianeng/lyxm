@@ -38,7 +38,12 @@
 		<el-table :data="tableData" style="width: 100%" border>
 			<el-table-column prop="deptName" label="部门" min-width="180"> </el-table-column>
 			<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
-			<!-- <el-table-column prop="area" label="赋权上级单位"> </el-table-column> -->
+			<el-table-column prop="supDept" label="赋权上级单位"> </el-table-column>
+			<el-table-column prop="supDept" label="高频事件">
+				<template slot-scope="scope">
+					<span>{{ scope.row.frequency == 1 ? '是' : '否' }}</span>
+				</template>
+			</el-table-column>
 			<el-table-column align="center" label="操作" width="100">
 				<template slot-scope="scope">
 					<span class="hover_a" @click="editItem(scope.row)">编辑</span>
@@ -57,16 +62,21 @@
 			>
 			</el-pagination>
 		</div>
-		<el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+		<el-dialog :title="modelTitile" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
 				<el-form-item label="部门">
 					<!-- <el-input v-model="formData.department"></el-input> -->
-					<el-select style="width: 100%" v-model="formData.deptName" placeholder="请选择">
+					<el-select
+						style="width: 100%"
+						v-model="formData.deptName"
+						@change="changeDe"
+						placeholder="请选择"
+					>
 						<el-option
 							v-for="item in departmentOptions"
-							:key="item.value"
-							:label="item.label"
-							:value="item.value"
+							:key="item.id"
+							:label="item.name"
+							:value="item"
 						>
 						</el-option>
 					</el-select>
@@ -74,9 +84,13 @@
 				<el-form-item label="事项名称">
 					<el-input v-model="formData.name"></el-input>
 				</el-form-item>
-				<!-- <el-form-item label="赋权上级单位">
-					<el-input v-model="formData.area"></el-input>
-				</el-form-item> -->
+				<el-form-item label="赋权上级单位">
+					<el-input v-model="formData.supDept"></el-input>
+				</el-form-item>
+				<el-form-item label="高频事件">
+					<el-radio v-model="formData.frequency" label="1">是</el-radio>
+					<el-radio v-model="formData.frequency" label="0">否</el-radio>
+				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="handleClose">取 消</el-button>
@@ -105,9 +119,13 @@ export default {
 			},
 			formData: {
 				name: '',
-				// area: '',
+				deptId: '',
 				deptName: '',
+				supDept: '',
+				frequency: '0',
+				id: '',
 			},
+			modelTitile: '新增',
 			total: 0,
 			pageParams: {
 				currentPage: 1,
@@ -139,6 +157,10 @@ export default {
 		search() {
 			this.getData()
 		},
+		changeDe(item) {
+			this.formData.deptId = item.id
+			this.formData.deptName = item.name
+		},
 		getDeptName() {
 			// GET /dept/query
 			this.$axios.get('/dept/query', {}).then((res) => {
@@ -152,6 +174,15 @@ export default {
 		},
 		addItem() {
 			this.dialogVisible = true
+			this.modelTitile = '新增'
+			this.formData = {
+				name: '',
+				deptId: '',
+				deptName: '',
+				supDept: '',
+				frequency: '0',
+				id: '',
+			}
 		},
 		showModel() {
 			this.dialogVisible = true
@@ -161,11 +192,19 @@ export default {
 				...this.formData,
 				// deptId: 1,
 			}
-			// POST /matter/insert
-			this.$axios.post('/matter/insert', params).then(() => {
-				this.dialogVisible = false
-				this.getData()
-			})
+			if (this.modelTitile == '新增') {
+				delete params.id
+				this.$axios.post('/matter/insert', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			} else if (this.modelTitile == '编辑') {
+				// POST /matter/update
+				this.$axios.post('/matter/update', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			}
 		},
 		handleClose() {
 			this.dialogVisible = false
@@ -182,9 +221,13 @@ export default {
 		},
 		editItem(row) {
 			this.dialogVisible = true
+			this.modelTitile = '编辑'
 			this.formData.name = row.name
-			// this.formData.area = row.area
+			this.formData.frequency  = row.frequency 
 			this.formData.deptName = row.deptName
+			this.formData.deptId = row.deptId
+			this.formData.supDept = row.supDept 
+			this.formData.id = row.id
 		},
 		deleteItem(row) {
 			this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
@@ -192,7 +235,13 @@ export default {
 				cancelButtonText: '取消',
 				type: 'warning',
 			}).then(() => {
-				console.log(row)
+				let params = {
+					id: row.id,
+				}
+				this.$axios.post('/matter/delete', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
 			})
 		},
 	},

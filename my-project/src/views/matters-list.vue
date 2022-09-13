@@ -96,7 +96,7 @@ export default {
 	data() {
 		console.log(this.$store)
 		return {
-			departmentOptions: this.$store.state.menu.departmentOptions,
+			departmentOptions: [], //this.$store.state.menu.departmentOptions,
 			dialogVisible: false,
 			searchData: {
 				name: '',
@@ -141,7 +141,8 @@ export default {
 		},
 		getDeptName() {
 			// GET /dept/query
-			this.$axios.get('/dept/query', {}).then(() => {
+			this.$axios.get('/dept/query', {}).then((res) => {
+				this.departmentOptions = res.data
 				// this.$message({
 				// 	message: '成功',
 				// 	type: 'success',
@@ -158,7 +159,7 @@ export default {
 		affirm() {
 			let params = {
 				...this.formData,
-				deptId: 1,
+				// deptId: 1,
 			}
 			// POST /matter/insert
 			this.$axios.post('/matter/insert', params).then(() => {

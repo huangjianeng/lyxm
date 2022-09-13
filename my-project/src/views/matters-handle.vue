@@ -18,8 +18,11 @@
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="justify-content: flex-end">
-						<el-button type="primary" size="small" @click="addItem" style="margin-right: 6px"
+						<el-button type="primary" size="small" @click="search" style="margin-right: 6px"
 							>查询</el-button
+						>
+						<el-button type="primary" size="small" @click="handleClick" style="margin-right: 6px"
+							>事项申报</el-button
 						>
 						<ExcelExport filename="excel" :sheet="sheet">
 							<el-button class="table_down" size="small" type="primary">导出 </el-button>
@@ -37,8 +40,8 @@
 			<el-table-column prop="address" label="月统计上报数量"> </el-table-column>
 			<el-table-column fixed="right" label="操作" width="140">
 				<template slot-scope="scope">
-					<el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button>
-					<!-- <el-button type="text" size="small">编辑</el-button> -->
+					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
+					<el-button type="text" @click="handleClick(scope.row)" size="small">编辑</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -56,24 +59,37 @@
 		<el-dialog title="申报" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
 				<el-form-item label="事项名称">
-					<el-input v-model="formData.region"></el-input>
+					<el-select
+						style="width: 100%"
+						:value="formData.matterName"
+						@change="changeEvent"
+						placeholder="请选择"
+					>
+						<el-option
+							v-for="item in eventOptions"
+							:key="item.id"
+							:label="item.name"
+							:value="item"
+						>
+						</el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item label="申报月份">
 					<el-date-picker
 						style="width: 100%"
-						v-model="formData.type"
+						v-model="formData.mon"
 						type="month"
 						placeholder="选择月"
 					>
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="月统计数量">
-					<el-input v-model="formData.type"></el-input>
+					<el-input v-model="formData.amount"></el-input>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="handleClose">取 消</el-button>
-				<el-button type="primary" @click="showModel">确 定</el-button>
+				<el-button type="primary" @click="affirm">确 定</el-button>
 			</span>
 		</el-dialog>
 	</div>
@@ -99,26 +115,28 @@ export default {
 			],
 			dialogVisible: false,
 			searchData: {
-				month: '',
+				month: [],
+				// name: '',
+				// area: '',
+				// deptName: '',
+			},
+			total: 0,
+			pageParams: {
+				currentPage: 1,
+				pageSize: 10,
 			},
 			formData: {
-				name: '',
-				region: '',
-				type: '',
+				amount: '',
+				deptId: '',
+				deptName: '',
+				matterId: '',
+				matterName: '',
+				mon: '',
 			},
-			tableData: [
-				{
-					date: '退役军人服务站（文化站）',
-					name: '娱乐场所从事娱乐场所经营活动审批',
-					address: '12',
-				},
-				{
-					date: '自然资源所',
-					name: '建设用地（含临时用地）规划许可证核发',
-					address: '5',
-				},
-			],
+			tableData: [],
 			currentPage: 1,
+			departmentOptions: [],
+			eventOptions: [],
 		}
 	},
 	mounted() {
@@ -126,15 +144,78 @@ export default {
 	},
 	methods: {
 		init() {
-			let arr = []
-			for (let i = 0; i < 5; i++) {
-				arr.push(...this.tableData)
+			this.getData()
+			this.getDeptName()
+			this.getEventList()
+		},
+		search() {
+			this.getData()
+		},
+		changeEvent(item) {
+			this.formData.deptId = item.deptId
+			this.formData.deptName = item.deptName
+			this.formData.matterId = item.id
+			this.formData.matterName = item.name
+		},
+		getEventList() {
+			let params = {
+				currentPage: 1,
+				pageSize: 999,
 			}
-			this.tableData = arr
-			this.sheet[0].table = arr
+			this.$axios.post('/matter/query', params).then((res) => {
+				console.log(res)
+				// this.total = res.data.total
+				this.eventOptions = res.data.data
+			})
+		},
+		getDeptName() {
+			// GET /dept/query
+			this.$axios.get('/dept/query', {}).then((res) => {
+				this.departmentOptions = res.data
+				// this.$message({
+				// 	message: '成功',
+				// 	type: 'success',
+				// })
+				// this.$router.go(-1)
+			})
+		},
+		getData() {
+			// POST / declaration / query
+			console.log(this.searchData)
+			let params = {
+				startDate: this.searchData.month[0],
+				endDate: this.searchData.month[1],
+				...this.pageParams,
+			}
+			this.$axios.post('/declaration/query', params).then((res) => {
+				console.log(res)
+				this.total = res.data.total
+				this.tableData = res.data.data
+			})
 		},
 		handleClick() {
 			this.showModel()
+			this.formData = {
+				amount: '',
+				deptId: '',
+				deptName: '',
+				matterId: '',
+				matterName: '',
+				mon: '',
+			}
+		},
+		affirm() {
+			let params = {
+				...this.formData,
+				amount: Number(this.formData.amount),
+				// deptId: 1,
+			}
+			console.log(params)
+			// POST /matter/insert POST /declaration/save
+			this.$axios.post('/declaration/save', params).then(() => {
+				this.dialogVisible = false
+				this.getData()
+			})
 		},
 		addItem() {
 			this.$axios.get('/user/userinfo').then((res) => {

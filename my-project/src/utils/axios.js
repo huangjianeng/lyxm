@@ -86,7 +86,7 @@ service.defaults.retryDelay = 1000
 
 // request拦截器
 service.interceptors.request.use(
-	config => {
+	(config) => {
 		// const token = Storage.get('token')
 		// token && (config.headers.token = token)
 		// if (store.getters.token) {
@@ -96,7 +96,7 @@ service.interceptors.request.use(
 		// }
 		return config
 	},
-	error => {
+	(error) => {
 		Promise.reject(error)
 	}
 )
@@ -106,12 +106,12 @@ service.interceptors.request.use(
  */
 service.interceptors.response.use(
 	// 请求成功
-	response => {
+	(response) => {
 		/**
 		 * code:0,接口正常返回;
 		 */
 		var res = response.data
-		if(res.code === 999){
+		if (res.code === 999) {
 			return response.data
 		}
 		if (res.status !== 200) {
@@ -132,7 +132,7 @@ service.interceptors.response.use(
 		}
 	},
 	// 请求失败
-	error => {
+	(error) => {
 		//请求超时的之后，抛出 error.code = ECONNABORTED的错误..错误信息是 timeout of  xxx ms exceeded
 		if (error.code == 'ECONNABORTED' && error.message.indexOf('timeout') != -1) {
 			Message({
@@ -153,14 +153,14 @@ service.interceptors.response.use(
 			config.__retryCount += 1
 
 			// Create new promise to handle exponential backoff
-			var backoff = new Promise(function(resolve) {
-				setTimeout(function() {
+			var backoff = new Promise(function (resolve) {
+				setTimeout(function () {
 					//console.log('resolve');
 					resolve()
 				}, config.retryDelay || 1)
 			})
 
-			return backoff.then(function() {
+			return backoff.then(function () {
 				return axios(config)
 			})
 		} else {

@@ -24,7 +24,7 @@
 				<el-card class="box_card" v-for="(v, i) in list" :key="i">
 					<div class="item">
 						<div>一般事项{{ v }}已三个月未申报</div>
-						<div class="state">{{ v % 2 == 0 ? '已读' : '未读' }}</div>
+						<!-- <div class="state">{{ v % 2 == 0 ? '已读' : '未读' }}</div> -->
 					</div>
 				</el-card>
 			</div>

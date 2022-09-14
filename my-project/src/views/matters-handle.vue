@@ -19,10 +19,8 @@
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="justify-content: flex-end">
-						<el-button type="primary" size="small" @click="search" style="margin-right: 6px"
-							>查询</el-button
-						>
-						<el-button type="primary" size="small" @click="handleClick" style="margin-right: 6px"
+						<el-button type="primary" size="small" @click="search">查询</el-button>
+						<el-button type="primary" size="small" @click="handleClick" style="margin-right: 10px"
 							>事项申报</el-button
 						>
 						<ExcelExport filename="excel" :sheet="sheet">
@@ -126,7 +124,7 @@ export default {
 				currentPage: 1,
 				pageSize: 10,
 			},
-			modelTitile:'新增',
+			modelTitile: '新增',
 			formData: {
 				amount: '',
 				deptId: '',
@@ -154,7 +152,7 @@ export default {
 			this.getData()
 		},
 		changeEvent(id) {
-			let item = this.eventOptions.find(v=>v.id == id) || {}
+			let item = this.eventOptions.find((v) => v.id == id) || {}
 			this.formData.deptId = item.deptId
 			this.formData.deptName = item.deptName
 			this.formData.matterId = item.id
@@ -186,9 +184,9 @@ export default {
 			// POST / declaration / query
 			console.log(this.searchData)
 			let params = {
-				startDate:this.getYearMonth(this.searchData.month[0]),
-				endDate:this.getYearMonth(this.searchData.month[1]),
-				...this.pageParams
+				startDate: this.getYearMonth(this.searchData.month[0]),
+				endDate: this.getYearMonth(this.searchData.month[1]),
+				...this.pageParams,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
@@ -220,7 +218,7 @@ export default {
 				...this.formData,
 				amount: Number(this.formData.amount),
 				// deptId: 1,
-				ym:this.getYearMonth(this.formData.ym)
+				ym: this.getYearMonth(this.formData.ym),
 			}
 			console.log(params)
 			// POST /matter/insert POST /declaration/save

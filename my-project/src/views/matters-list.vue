@@ -1,7 +1,12 @@
 <template>
 	<div class="box">
 		<div class="search_box">
-			<el-form :inline="true" :model="formData" class="user-search">
+			<el-form
+				style="width: 100%; text-align: left"
+				:inline="true"
+				:model="formData"
+				class="user-search"
+			>
 				<el-form-item>
 					<el-input
 						size="small"
@@ -15,18 +20,18 @@
 						size="small"
 						filterable
 						clearable
-						v-model="searchData.deptName"
+						v-model="searchData.deptId"
 						placeholder="部门"
 					>
 						<el-option
 							v-for="item in departmentOptions"
-							:key="item.value"
-							:label="item.label"
-							:value="item.value"
+							:key="item.id"
+							:label="item.name"
+							:value="item.id"
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item>
+				<el-form-item style="float: right">
 					<el-button size="small" type="primary" @click="search">搜索</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
@@ -115,7 +120,7 @@ export default {
 			searchData: {
 				name: '',
 				// area: '',
-				deptName: '',
+				deptId: '',
 			},
 			formData: {
 				name: '',
@@ -155,6 +160,10 @@ export default {
 			})
 		},
 		search() {
+			this.pageParams = {
+				currentPage: 1,
+				pageSize: 10,
+			}
 			this.getData()
 		},
 		changeDe(item) {
@@ -223,10 +232,10 @@ export default {
 			this.dialogVisible = true
 			this.modelTitile = '编辑'
 			this.formData.name = row.name
-			this.formData.frequency  = row.frequency 
+			this.formData.frequency = row.frequency
 			this.formData.deptName = row.deptName
 			this.formData.deptId = row.deptId
-			this.formData.supDept = row.supDept 
+			this.formData.supDept = row.supDept
 			this.formData.id = row.id
 		},
 		deleteItem(row) {

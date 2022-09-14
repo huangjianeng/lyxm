@@ -69,7 +69,7 @@
 		</div>
 		<el-dialog :title="modelTitile" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
-				<el-form-item label="部门">
+				<el-form-item label="部门：">
 					<!-- <el-input v-model="formData.department"></el-input> -->
 					<el-select
 						style="width: 100%"
@@ -86,15 +86,17 @@
 						</el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="事项名称">
+				<el-form-item label="事项名称：">
 					<el-input v-model="formData.name"></el-input>
 				</el-form-item>
-				<el-form-item label="赋权上级单位">
+				<el-form-item label="赋权上级单位：">
 					<el-input v-model="formData.supDept"></el-input>
 				</el-form-item>
-				<el-form-item label="高频事件">
-					<el-radio v-model="formData.frequency" label="1">是</el-radio>
-					<el-radio v-model="formData.frequency" label="0">否</el-radio>
+				<el-form-item label="高频事件：">
+					<div style="text-align: left">
+						<el-radio v-model="formData.frequency" label="1">是</el-radio>
+						<el-radio v-model="formData.frequency" label="0">否</el-radio>
+					</div>
 				</el-form-item>
 			</el-form>
 			<span slot="footer" class="dialog-footer">

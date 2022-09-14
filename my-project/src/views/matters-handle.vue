@@ -7,14 +7,23 @@
 						<div>统计月份：</div>
 						<el-date-picker
 							v-model="searchData.month"
+							type="month"
+							:clearable="false"
+							placeholder="选择月"
+						>
+						</el-date-picker>
+						<!-- <el-date-picker
+							v-model="searchData.month"
 							type="monthrange"
+							type="month"
 							range-separator="至"
 							start-placeholder="开始月份"
 							end-placeholder="结束月份"
 							:clearable="false"
 						>
-						</el-date-picker></div
-				></el-col>
+						</el-date-picker> -->
+					</div></el-col
+				>
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6">
@@ -40,7 +49,7 @@
 			<el-table-column fixed="right" label="操作" width="140">
 				<template slot-scope="scope">
 					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
-					<el-button type="text" @click="handleClick(scope.row)" size="small">编辑</el-button>
+					<el-button type="text" @click="editClick(scope.row)" size="small">编辑</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -55,9 +64,9 @@
 			>
 			</el-pagination>
 		</div>
-		<el-dialog title="申报" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+		<el-dialog :title="modelTitile" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
-				<el-form-item label="事项名称">
+				<el-form-item label="事项名称：">
 					<el-select
 						style="width: 100%"
 						:value="formData.matterName"
@@ -73,8 +82,9 @@
 						</el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="申报月份">
+				<el-form-item label="申报月份：">
 					<el-date-picker
+						:disabled="modelTitile == '编辑'"
 						style="width: 100%"
 						v-model="formData.ym"
 						type="month"
@@ -82,7 +92,7 @@
 					>
 					</el-date-picker>
 				</el-form-item>
-				<el-form-item label="月统计数量">
+				<el-form-item label="月统计数量：">
 					<el-input v-model="formData.amount"></el-input>
 				</el-form-item>
 			</el-form>
@@ -107,17 +117,14 @@ export default {
 		return {
 			sheet: [
 				{
-					tHeader: ['工程编号', '委托单位', '清单名称', '收费金额'],
-					keys: ['date', 'name', 'address', 'totalMoney'],
+					tHeader: ['部门', '事项名称', '月统计上报数量'],
+					keys: ['deptName', 'matterName', 'amount'],
 					table: [],
 				},
 			],
 			dialogVisible: false,
 			searchData: {
-				month: [new Date(), new Date()],
-				// name: '',
-				// area: '',
-				// deptName: '',
+				month: new Date(),
 			},
 			total: 0,
 			pageParams: {
@@ -145,11 +152,13 @@ export default {
 	methods: {
 		init() {
 			this.getData()
+			this.getSheetData()
 			this.getDeptName()
 			this.getEventList()
 		},
 		search() {
 			this.getData()
+			this.getSheetData()
 		},
 		changeEvent(id) {
 			let item = this.eventOptions.find((v) => v.id == id) || {}
@@ -164,8 +173,6 @@ export default {
 				pageSize: 999,
 			}
 			this.$axios.post('/matter/query', params).then((res) => {
-				console.log(res)
-				// this.total = res.data.total
 				this.eventOptions = res.data.data
 			})
 		},
@@ -173,25 +180,46 @@ export default {
 			// GET /dept/query
 			this.$axios.get('/dept/query', {}).then((res) => {
 				this.departmentOptions = res.data
-				// this.$message({
-				// 	message: '成功',
-				// 	type: 'success',
-				// })
-				// this.$router.go(-1)
 			})
 		},
-		getData() {
-			// POST / declaration / query
-			console.log(this.searchData)
+		getSheetData() {
 			let params = {
-				startDate: this.getYearMonth(this.searchData.month[0]),
-				endDate: this.getYearMonth(this.searchData.month[1]),
-				...this.pageParams,
+				startDate: this.getYearMonth(this.searchData.month),
+				endDate: this.getYearMonth(this.searchData.month),
+				currentPage: 1,
+				pageSize: 999,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
 				this.total = res.data.total
 				this.tableData = res.data.data
+			})
+		},
+		getData() {
+			console.log(this.searchData)
+			let params = {
+				startDate: this.getYearMonth(this.searchData.month),
+				endDate: this.getYearMonth(this.searchData.month),
+				...this.pageParams,
+			}
+			this.$axios.post('/declaration/query', params).then((res) => {
+				console.log(res)
+				// this.total = res.data.total
+				// let data = []
+				this.sheet[0].tHeader[2] =
+					this.searchData.month.getFullYear() +
+					'年' +
+					(this.searchData.month.getMonth() + 1) +
+					'月' +
+					'上报数量'
+				let data = res.data.data.map((v) => {
+					return {
+						...v,
+						amount: Number(v.amount),
+					}
+				})
+
+				this.sheet[0].table = data
 			})
 		},
 		getYearMonth(date) {
@@ -204,6 +232,7 @@ export default {
 		},
 		handleClick() {
 			this.showModel()
+			this.modelTitile = '新增'
 			this.formData = {
 				amount: '',
 				deptId: '',
@@ -211,6 +240,18 @@ export default {
 				matterId: '',
 				matterName: '',
 				ym: '',
+			}
+		},
+		editClick(row) {
+			this.showModel()
+			this.modelTitile = '编辑'
+			this.formData = {
+				amount: row.amount,
+				deptId: row.deptId,
+				deptName: row.deptName,
+				matterId: row.matterId,
+				matterName: row.matterName,
+				ym: this.searchData.month,
 			}
 		},
 		affirm() {
@@ -221,11 +262,18 @@ export default {
 				ym: this.getYearMonth(this.formData.ym),
 			}
 			console.log(params)
+			if (this.modelTitile == '新增') {
+				this.$axios.post('/declaration/save', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			} else if (this.modelTitile == '编辑') {
+				this.$axios.post('/declaration/update', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			}
 			// POST /matter/insert POST /declaration/save
-			this.$axios.post('/declaration/save', params).then(() => {
-				this.dialogVisible = false
-				this.getData()
-			})
 		},
 		addItem() {
 			this.$axios.get('/user/userinfo').then((res) => {

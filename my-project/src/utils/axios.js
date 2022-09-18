@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
 // import Storage from './Storage'
 import router from '../router/index'
 // import store from "../vuex";
-// import store from "../vuex";
+import store from "../store";
 // import { getToken } from "./auth";
 
 // 环境的切换
@@ -82,22 +82,18 @@ var service = axios.create({
 
 // axios 超时重新请求
 // 请求次数
-service.defaults.retry = 2
+service.defaults.retry = 0
 //请求的间隙
 service.defaults.retryDelay = 1000
 
 // request拦截器
 service.interceptors.request.use(
 	(config) => {
-		
-		if (sessionStorage.getItem('user')) {
-			const userInfo = JSON.parse(sessionStorage.getItem('user'))
-			console.log(userInfo)
-			if(userInfo && userInfo.token){
-				config.headers = {
-					'token': userInfo.token, //携带权限参数
-				};
-			}
+		console.log(store)
+		if (store.state.menu.userInfo && store.state.menu.userInfo.token) {
+			config.headers = {
+				'token': store.state.menu.userInfo.token, //携带权限参数
+			};
 		}
 		return config
 	},

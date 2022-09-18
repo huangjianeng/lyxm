@@ -1,6 +1,7 @@
 const menu = {
 	namespaced: true, //开启命名空间
 	state: {
+		userInfo:{},
 		departmentOptions:[
 			{
 				label:'退役军人服务站（文化站）',
@@ -24,8 +25,8 @@ const menu = {
 	},
 	//设置状态的方法
 	mutations: {
-		setLeftName(state, val) {
-			state.leftName = val
+		setUserInfo(state, val) {
+			state.userInfo = val
 		},
 		setMessageState(state,val){
 			state.isShowMessage = val

@@ -21,9 +21,9 @@
 		>
 			<div class="drawer_head">预警消息列表</div>
 			<div class="mes_box">
-				<el-card class="box_card" v-for="(v, i) in list" :key="i">
+				<el-card class="box_card" v-for="(v, i) in tableData" :key="i">
 					<div class="item">
-						<div>一般事项{{ v }}已三个月未申报</div>
+						<div>{{v}}</div>
 						<!-- <div class="state">{{ v % 2 == 0 ? '已读' : '未读' }}</div> -->
 					</div>
 				</el-card>
@@ -41,7 +41,7 @@ export default {
 	data() {
 		return {
 			list: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-			messageTotal: 10,
+			messageTotal: 0,
 			drawer: false,
 			admin_level: null,
 			total: 0,
@@ -50,9 +50,18 @@ export default {
 		}
 	},
 	mounted() {
-		// this.init()
+		this.init()
 	},
 	methods: {
+		init() {
+			// GET /declaration/warning
+			this.$axios.get('/declaration/warning', {}).then((res) => {
+				console.log(res)
+				const data = res.data || []
+				this.messageTotal = data.length
+				this.tableData = data
+			})
+		},
 		showMessage() {
 			this.drawer = true
 		},

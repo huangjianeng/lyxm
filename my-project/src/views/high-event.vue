@@ -5,13 +5,20 @@
 				<el-col :span="6"
 					><div class="grid-content bg-purple">
 						<div>统计月份：</div>
-						<el-date-picker
+						<!-- <el-date-picker
 							v-model="searchData.month"
 							type="monthrange"
 							range-separator="至"
 							start-placeholder="开始月份"
 							end-placeholder="结束月份"
 							:clearable="false"
+						>
+						</el-date-picker> -->
+						<el-date-picker
+							v-model="searchData.month"
+							type="month"
+							:clearable="false"
+							placeholder="选择月"
 						>
 						</el-date-picker></div
 				></el-col>
@@ -52,6 +59,10 @@ export default {
 				type: '',
 			},
 			tableData: [],
+			pageParams: {
+				currentPage: 1,
+				pageSize: 999,
+			},
 			quarterOptions: [
 				{
 					label: '第一季度',
@@ -71,22 +82,21 @@ export default {
 				},
 			],
 			searchData: {
-				month: [new Date(new Date().setMonth(new Date().getMonth() - 3)), new Date()],
+				month: new Date(),
+				// month: [new Date(new Date().setMonth(new Date().getMonth() - 3)), new Date()],
 			},
 			currentPage: 1,
 		}
 	},
 	mounted() {
-		// this.init()
+		this.init()
 	},
 	methods: {
 		init() {
 			this.getData()
-			this.initEchars()
 		},
 		search() {
 			this.getData()
-			this.initEchars()
 		},
 		getYearMonth(date) {
 			let year = date.getFullYear()
@@ -100,14 +110,26 @@ export default {
 			// POST / declaration / query
 			console.log(this.searchData)
 			let params = {
-				startDate: this.getYearMonth(this.searchData.month[0]),
-				endDate: this.getYearMonth(this.searchData.month[1]),
+				startDate: this.getYearMonth(this.searchData.month),
+				endDate: this.getYearMonth(this.searchData.month),
 				...this.pageParams,
+				frequency: 1,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
 				this.total = res.data.total
-				this.tableData = res.data.data
+				let arr = res.data.data || []
+				let data = []
+				arr.forEach((v) => {
+					if (v.matterName && v.amount) {
+						data.push({
+							value: v.amount,
+							name: v.matterName,
+						})
+					}
+				})
+				this.tableData = data
+				this.initEchars()
 			})
 		},
 		initEchars() {
@@ -131,13 +153,7 @@ export default {
 						name: '高频事项统计表',
 						type: 'pie',
 						radius: '50%',
-						data: [
-							{ value: 1048, name: '异议登记' },
-							{ value: 735, name: '更正登记' },
-							{ value: 580, name: '注销登记' },
-							{ value: 484, name: '抵押权登记' },
-							{ value: 300, name: '不动产变更登记' },
-						],
+						data: this.tableData,
 						emphasis: {
 							itemStyle: {
 								shadowBlur: 10,

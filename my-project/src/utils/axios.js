@@ -87,13 +87,16 @@ service.defaults.retryDelay = 1000
 // request拦截器
 service.interceptors.request.use(
 	(config) => {
-		// const token = Storage.get('token')
-		// token && (config.headers.token = token)
-		// if (store.getters.token) {
-		//   config.headers = {
-		//     'token' : getToken('Token'), //携带权限参数
-		//    };
-		// }
+		
+		if (localStorage.getItem('user')) {
+			const userInfo = JSON.parse(localStorage.getItem('user'))
+			console.log(userInfo)
+			if(userInfo && userInfo.token){
+				config.headers = {
+					'token': userInfo.token, //携带权限参数
+				};
+			}
+		}
 		return config
 	},
 	(error) => {

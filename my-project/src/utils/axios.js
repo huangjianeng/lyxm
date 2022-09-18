@@ -36,19 +36,21 @@ const errorHandle = (status, msg) => {
 	switch (status) {
 		//  默认失败  code  500
 		//  成果 code 0
-		case 500:
-			if (msg == 'token不能为空' || msg == 'token失效，请重新登录') {
+		case 201:
+			if (msg == '登录验证失败,请重新登录' || msg == '登录验证失败,请重新登录') {
 				setTimeout(() => {
-					console.log(router)
-					if (window.location.hostname != '192.168.5.5') {
-						window.location.href = 'http://222.240.1.65:20080/x_desktop/index.html'
-					} else {
-						window.location.href = 'http://192.168.10.21:8001/x_desktop/index.html  '
-					}
-					// router.push({
-					// 	path: `/index`,
-					// })
-				}, 500)
+					// console.log(router)
+					// if (window.location.hostname != '192.168.5.5') {
+					// 	window.location.href = 'http://222.240.1.65:20080/x_desktop/index.html'
+					// } else {
+					// 	window.location.href = 'http://192.168.10.21:8001/x_desktop/index.html  '
+					// }
+					// debugger
+					
+					router.push({
+						path: `/login`,
+					})
+				}, 300)
 				return
 			}
 			break
@@ -88,8 +90,8 @@ service.defaults.retryDelay = 1000
 service.interceptors.request.use(
 	(config) => {
 		
-		if (localStorage.getItem('user')) {
-			const userInfo = JSON.parse(localStorage.getItem('user'))
+		if (sessionStorage.getItem('user')) {
+			const userInfo = JSON.parse(sessionStorage.getItem('user'))
 			console.log(userInfo)
 			if(userInfo && userInfo.token){
 				config.headers = {
@@ -116,6 +118,17 @@ service.interceptors.response.use(
 		var res = response.data
 		if (res.code === 999) {
 			return response.data
+		}
+		if (res.msg == '登录验证失败,请重新登录' ) {
+			Message({
+				message: res.msg,
+				type: 'error',
+				duration: 3 * 1000,
+			})
+			router.push({
+				path: `/login`,
+			})
+			return
 		}
 		if (res.status !== 200) {
 			Message({

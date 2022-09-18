@@ -93,7 +93,7 @@ export default {
 					this.$axios.post('/user/doLogin', params).then((res) => {
 						console.log(res)
 						if (res.status == '200') {
-							localStorage.setItem('user', JSON.stringify(res.data))
+							sessionStorage.setItem('user', JSON.stringify(res.data))
 							this.$router.push({ path: '/mattersHandle' })
 						}
 					})

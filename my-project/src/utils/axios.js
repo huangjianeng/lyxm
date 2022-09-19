@@ -8,7 +8,7 @@ import { Message } from 'element-ui'
 // import Storage from './Storage'
 import router from '../router/index'
 // import store from "../vuex";
-// import store from "../vuex";
+import store from "../store";
 // import { getToken } from "./auth";
 
 // 环境的切换
@@ -36,19 +36,21 @@ const errorHandle = (status, msg) => {
 	switch (status) {
 		//  默认失败  code  500
 		//  成果 code 0
-		case 500:
-			if (msg == 'token不能为空' || msg == 'token失效，请重新登录') {
+		case 201:
+			if (msg == '登录验证失败,请重新登录' || msg == '登录验证失败,请重新登录') {
 				setTimeout(() => {
-					console.log(router)
-					if (window.location.hostname != '192.168.5.5') {
-						window.location.href = 'http://222.240.1.65:20080/x_desktop/index.html'
-					} else {
-						window.location.href = 'http://192.168.10.21:8001/x_desktop/index.html  '
-					}
-					// router.push({
-					// 	path: `/index`,
-					// })
-				}, 500)
+					// console.log(router)
+					// if (window.location.hostname != '192.168.5.5') {
+					// 	window.location.href = 'http://222.240.1.65:20080/x_desktop/index.html'
+					// } else {
+					// 	window.location.href = 'http://192.168.10.21:8001/x_desktop/index.html  '
+					// }
+					// debugger
+					
+					router.push({
+						path: `/login`,
+					})
+				}, 300)
 				return
 			}
 			break
@@ -80,20 +82,19 @@ var service = axios.create({
 
 // axios 超时重新请求
 // 请求次数
-service.defaults.retry = 2
+service.defaults.retry = 0
 //请求的间隙
 service.defaults.retryDelay = 1000
 
 // request拦截器
 service.interceptors.request.use(
 	(config) => {
-		// const token = Storage.get('token')
-		// token && (config.headers.token = token)
-		// if (store.getters.token) {
-		//   config.headers = {
-		//     'token' : getToken('Token'), //携带权限参数
-		//    };
-		// }
+		console.log(store)
+		if (store.state.menu.userInfo && store.state.menu.userInfo.token) {
+			config.headers = {
+				'token': store.state.menu.userInfo.token, //携带权限参数
+			};
+		}
 		return config
 	},
 	(error) => {
@@ -113,6 +114,17 @@ service.interceptors.response.use(
 		var res = response.data
 		if (res.code === 999) {
 			return response.data
+		}
+		if (res.msg == '登录验证失败,请重新登录' ) {
+			Message({
+				message: res.msg,
+				type: 'error',
+				duration: 3 * 1000,
+			})
+			router.push({
+				path: `/login`,
+			})
+			return
 		}
 		if (res.status !== 200) {
 			Message({

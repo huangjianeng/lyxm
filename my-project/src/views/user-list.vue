@@ -168,8 +168,9 @@ export default {
 				...this.formData,
 				superAdmin: 0, //是否为超级管理员(0：否 1：是)
 			}
+			// POST /user/doRegister
 			// POST /matter/insert
-			this.$axios.post('/matter/insert', params).then(() => {
+			this.$axios.post('/user/doRegister', params).then(() => {
 				this.dialogVisible = false
 				this.getData()
 			})

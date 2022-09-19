@@ -157,6 +157,10 @@ export default {
 			this.getEventList()
 		},
 		search() {
+			this.pageParams = {
+				currentPage: 1,
+				pageSize: 10,
+			},
 			this.getData()
 			this.getSheetData()
 		},
@@ -265,12 +269,12 @@ export default {
 			if (this.modelTitile == '新增') {
 				this.$axios.post('/declaration/save', params).then(() => {
 					this.dialogVisible = false
-					this.getData()
+					this.search()
 				})
 			} else if (this.modelTitile == '编辑') {
 				this.$axios.post('/declaration/update', params).then(() => {
 					this.dialogVisible = false
-					this.getData()
+					this.search()
 				})
 			}
 			// POST /matter/insert POST /declaration/save

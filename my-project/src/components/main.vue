@@ -28,7 +28,7 @@
 				<i class="el-icon-menu"></i>
 				<span slot="title">聊天室</span>
 			</el-menu-item> -->
-			<el-menu-item index="/userList">
+			<el-menu-item index="/userList" v-if="$store.state.menu.userInfo.superAdmin == 1">
 				<i class="el-icon-setting"></i>
 				<span slot="title">用户列表</span>
 			</el-menu-item>
@@ -39,6 +39,20 @@
 <script>
 export default {
 	name: 'publishMain',
+	data() {
+		return {
+			userInfo: {},
+		}
+	},
+	mounted() {
+		if (sessionStorage.getItem('user')) {
+			const userInfo = JSON.parse(sessionStorage.getItem('user'))
+			console.log(userInfo)
+			if (userInfo && userInfo.token) {
+				this.userInfo = userInfo
+			}
+		}
+	},
 	methods: {
 		handleOpen(key, keyPath) {
 			console.log(key, keyPath)

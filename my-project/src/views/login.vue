@@ -58,19 +58,19 @@ export default {
 	name: 'loginIndex',
 	data() {
 		return {
-			//定义loading默认为false
+			// 定义loading默认为false
 			logining: false,
 			// 记住密码
 			rememberpwd: false,
 			ruleForm: {
-				//username和password默认为空
+				// username和password默认为空
 				username: '',
 				password: '',
-				code: '',
-				randomStr: '',
-				codeimg: '',
+				// code: '',
+				// randomStr: '',
+				// codeimg: '',
 			},
-			//rules前端验证
+			// rules前端验证
 			rules: {
 				username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
 				password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
@@ -84,7 +84,27 @@ export default {
 	methods: {
 		//
 		submitForm() {
-			this.$router.push({ path: '/index' })
+			this.$refs['ruleForm'].validate((valid, errorObj) => {
+				if (valid) {
+					let params = {
+						...this.ruleForm,
+					}
+					// POST /user/doLogin
+					this.$axios.post('/user/doLogin', params).then((res) => {
+						console.log(res)
+						if (res.status == '200') {
+							// sessionStorage.setItem('user', JSON.stringify(res.data))
+							this.$store.commit('menu/setUserInfo', res.data)
+							// this.$store.setUserInfo(res.data) 
+							this.$router.push({ path: '/mattersHandle' })
+						}
+					})
+				} else {
+					// 弹出第一个错误信息
+					this.$message.error(Object.values(errorObj)[0][0].message)
+					return false
+				}
+			})
 		},
 	},
 }
@@ -96,7 +116,7 @@ export default {
 	width: 100%;
 	height: 100%;
 	/* padding-top: 10%; */
-	background-image: url("../assets/logo.webp");
+	background-image: url('../assets/logo.webp');
 	background-repeat: no-repeat;
 	background-position: center center;
 	background-size: 100% 100%;

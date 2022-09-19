@@ -115,6 +115,7 @@ export default {
 	},
 	data() {
 		return {
+			deptId: this.$store.state.menu.userInfo.deptId,
 			sheet: [
 				{
 					tHeader: ['部门', '事项名称', '月统计上报数量'],
@@ -150,11 +151,11 @@ export default {
 		this.init()
 	},
 	methods: {
-		init() {
+		async init() {
 			this.getData()
+			this.getEventList()
 			this.getSheetData()
 			this.getDeptName()
-			this.getEventList()
 		},
 		search() {
 			this.pageParams = {
@@ -176,9 +177,11 @@ export default {
 			let params = {
 				currentPage: 1,
 				pageSize: 999,
+				deptId: this.deptId,
 			}
 			this.$axios.post('/matter/query', params).then((res) => {
 				this.eventOptions = res.data.data
+				this.total = res.data.total
 			})
 		},
 		getDeptName() {
@@ -187,46 +190,91 @@ export default {
 				this.departmentOptions = res.data
 			})
 		},
-		getSheetData() {
+		getData() {
 			let params = {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
 				currentPage: 1,
-				deptId: this.$store.state.menu.userInfo.deptId,
+				deptId: this.deptId,
 				pageSize: 999,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
-				console.log(res)
-				this.total = res.data.total
-				this.tableData = res.data.data
+				let arr = []
+				let params2 = {
+					...this.pageParams,
+					deptId: this.deptId,
+				}
+				this.$axios.post('/matter/query', params2).then((res2) => {
+					let arr = []
+					res2.data.data.forEach((v) => {
+						if (!this.deptId || v.deptId == this.deptId) {
+							let item = res.data.data.find((vv) => {
+								return vv.matterId == v.id
+							})
+							if (item) {
+								arr.push({
+									...item,
+								})
+							} else {
+								arr.push({
+									amount: 0,
+									deptId: v.deptId,
+									deptName: v.deptName,
+									frequency: v.frequency,
+									mondiff: v.supDept,
+									matterName: v.name,
+									matterId: v.id,
+								})
+							}
+						}
+					})
+					this.tableData = arr
+				})
+
+				this.tableData = arr
 			})
 		},
-		getData() {
+		getSheetData() {
 			console.log(this.searchData)
 			let params = {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
-				deptId: this.$store.state.menu.userInfo.deptId,
+				deptId: this.deptId,
 				...this.pageParams,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
-				// this.total = res.data.total
-				// let data = []
 				this.sheet[0].tHeader[2] =
 					this.searchData.month.getFullYear() +
 					'年' +
 					(this.searchData.month.getMonth() + 1) +
 					'月' +
 					'上报数量'
-				let data = res.data.data.map((v) => {
-					return {
-						...v,
-						amount: Number(v.amount),
+				let arr = []
+				this.eventOptions.forEach((v) => {
+					if (!this.deptId || v.deptId == this.deptId) {
+						let item = res.data.data.find((vv) => {
+							return vv.matterId == v.id
+						})
+						if (item) {
+							arr.push({
+								...item,
+								amount: Number(item.amount),
+							})
+						} else {
+							arr.push({
+								amount: 0,
+								deptId: v.deptId,
+								deptName: v.deptName,
+								frequency: v.frequency,
+								mondiff: v.supDept,
+								matterName: v.name,
+								matterId: v.id,
+							})
+						}
 					}
 				})
-
-				this.sheet[0].table = data
+				this.sheet[0].table = arr
 			})
 		},
 		getYearMonth(date) {

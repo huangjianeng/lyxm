@@ -81,6 +81,7 @@ export default {
 					value: '4',
 				},
 			],
+			deptId: this.$store.state.menu.userInfo.deptId,
 			searchData: {
 				month: new Date(),
 				// month: [new Date(new Date().setMonth(new Date().getMonth() - 3)), new Date()],
@@ -114,23 +115,40 @@ export default {
 				endDate: this.getYearMonth(this.searchData.month),
 				...this.pageParams,
 				frequency: 1,
-				deptId: this.$store.state.menu.userInfo.deptId,
+				deptId: this.deptId,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
-				console.log(res)
-				this.total = res.data.total
-				let arr = res.data.data || []
-				let data = []
-				arr.forEach((v) => {
-					if (v.matterName && v.amount) {
-						data.push({
-							value: v.amount,
-							name: v.matterName,
-						})
-					}
+				let params2 = {
+					currentPage: 1,
+					pageSize: 999,
+				}
+				this.$axios.post('/matter/query', params2).then((res2) => {
+					// console.log(res)
+					// this.total = result.data.total
+					let arr = []
+					res2.data.data.forEach((v) => {
+						if (!this.deptId || v.deptId == this.deptId) {
+							let item = res.data.data.find((vv) => {
+								console.log(vv)
+								return vv.matterId == v.id
+							})
+							if (item) {
+								arr.push({
+									// ...item,
+									name: item.matterName,
+									value: item.amount,
+								})
+							} else {
+								arr.push({
+									value: 0,
+									name: v.name,
+								})
+							}
+						}
+					})
+					this.tableData = arr
+					this.initEchars()
 				})
-				this.tableData = data
-				this.initEchars()
 			})
 		},
 		initEchars() {

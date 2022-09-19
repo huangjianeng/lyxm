@@ -32,7 +32,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item style="float: right">
-					<el-button size="small" type="primary" @click="search">搜索</el-button>
+					<el-button size="small" type="primary" @click="search">查询</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
 			</el-form>

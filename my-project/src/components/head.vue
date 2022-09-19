@@ -23,7 +23,7 @@
 			<div class="mes_box">
 				<el-card class="box_card" v-for="(v, i) in tableData" :key="i">
 					<div class="item">
-						<div>{{v}}</div>
+						<div>{{ v }}</div>
 						<!-- <div class="state">{{ v % 2 == 0 ? '已读' : '未读' }}</div> -->
 					</div>
 				</el-card>
@@ -45,7 +45,7 @@ export default {
 			drawer: false,
 			admin_level: null,
 			total: 0,
-			userName: '张三',
+			userName: this.$store.state.menu.userInfo.username,
 			userDepartment: '自然规划局',
 		}
 	},

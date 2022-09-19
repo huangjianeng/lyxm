@@ -94,8 +94,12 @@ export default {
 						console.log(res)
 						if (res.status == '200') {
 							// sessionStorage.setItem('user', JSON.stringify(res.data))
-							this.$store.commit('menu/setUserInfo', res.data)
-							// this.$store.setUserInfo(res.data) 
+							this.$store.commit('menu/setUserInfo', {
+								...res.data,
+								...this.ruleForm,
+							})
+							// this.$store.commit('menu/setUserInfo', res.data)
+							// this.$store.setUserInfo(res.data)
 							this.$router.push({ path: '/mattersHandle' })
 						}
 					})

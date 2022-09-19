@@ -114,6 +114,7 @@ export default {
 				endDate: this.getYearMonth(this.searchData.month),
 				...this.pageParams,
 				frequency: 1,
+				deptId: this.$store.state.menu.userInfo.deptId,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)

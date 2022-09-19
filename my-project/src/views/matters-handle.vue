@@ -160,7 +160,8 @@ export default {
 			this.pageParams = {
 				currentPage: 1,
 				pageSize: 10,
-			},
+			}
+
 			this.getData()
 			this.getSheetData()
 		},
@@ -191,6 +192,7 @@ export default {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
 				currentPage: 1,
+				deptId: this.$store.state.menu.userInfo.deptId,
 				pageSize: 999,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
@@ -204,6 +206,7 @@ export default {
 			let params = {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
+				deptId: this.$store.state.menu.userInfo.deptId,
 				...this.pageParams,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {

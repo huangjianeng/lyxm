@@ -57,7 +57,7 @@
 			>
 			</el-pagination>
 		</div>
-		<el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+		<el-dialog :title="modelTitle" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
 				<el-form-item label="部门">
 					<!-- <el-input v-model="formData.department"></el-input> -->
@@ -119,6 +119,8 @@ export default {
 			},
 			tableData: [],
 			currentPage: 1,
+			modelTitle: '新增',
+			editrow: {},
 		}
 	},
 	mounted() {
@@ -154,6 +156,7 @@ export default {
 		},
 		addItem() {
 			this.dialogVisible = true
+			this.modelTitle = '新增'
 			this.formData = {
 				username: '',
 				password: '',
@@ -168,15 +171,47 @@ export default {
 				...this.formData,
 				superAdmin: 0, //是否为超级管理员(0：否 1：是)
 			}
-			// POST /user/doRegister
-			// POST /matter/insert
-			this.$axios.post('/user/doRegister', params).then(() => {
-				this.dialogVisible = false
-				this.getData()
-			})
+			if (this.modelTitle == '新增') {
+				this.$axios.post('/user/doRegister', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			} else if (this.modelTitle == '编辑') {
+				delete params.superAdmin
+				params.id = this.editrow.id
+				this.$axios.post('/user/update', params).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			}
 		},
 		handleClose() {
 			this.dialogVisible = false
+		},
+		editItem(row) {
+			this.editrow = row
+			this.modelTitle = '编辑'
+			this.dialogVisible = true
+			this.formData.username = row.username
+			this.formData.password = row.password
+			this.formData.deptId = row.deptId
+		},
+		deleteItem(row) {
+			this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
+				confirmButtonText: '确定',
+				cancelButtonText: '取消',
+				type: 'warning',
+			}).then(() => {
+				console.log(row)
+				// let params = {
+				// 	...row,
+				// }
+				// /user/delete
+				this.$axios.post(`/user/delete/?id=${row.id}`, {}).then(() => {
+					this.dialogVisible = false
+					this.getData()
+				})
+			})
 		},
 		handleSizeChange(val) {
 			this.pageParams.pageSize = val
@@ -187,21 +222,6 @@ export default {
 			this.pageParams.currentPage = val
 			this.init()
 			console.log(`当前页: ${val}`)
-		},
-		editItem(row) {
-			this.dialogVisible = true
-			this.formData.name = row.name
-			// this.formData.area = row.area
-			this.formData.deptName = row.deptName
-		},
-		deleteItem(row) {
-			this.$confirm('此操作将删除该条数据, 是否继续?', '提示', {
-				confirmButtonText: '确定',
-				cancelButtonText: '取消',
-				type: 'warning',
-			}).then(() => {
-				console.log(row)
-			})
 		},
 	},
 }

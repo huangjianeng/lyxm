@@ -1,7 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import HomeView from '../views/HomeView.vue'
-
+// import index from '@/views/HomeView.vue'
+// import mattersHandle from '@/views/matters-handle.vue'
+// import mattersList from '@/views/matters-list.vue'
+// import highEvent from '@/views/high-event.vue'
+// import userList from '@/views/user-list.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -34,12 +37,12 @@ const routes = [
 				component: () => import('@/views/high-event.vue'),
 				meta: { title: '高频事项' },
 			},
-			{
-				path: '/chatBox',
-				name: '聊天室',
-				component: () => import('@/views/chat-box.vue'),
-				meta: { title: '聊天室' },
-			},
+			// {
+			// 	path: '/chatBox',
+			// 	name: '聊天室',
+			// 	component: () => import('@/views/chat-box.vue'),
+			// 	meta: { title: '聊天室' },
+			// },
 			{
 				path: '/userList',
 				name: '用户列表',

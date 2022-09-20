@@ -98,6 +98,12 @@ export default {
 								...res.data,
 								...this.ruleForm,
 							})
+							// const loading = this.$loading({
+							// 	lock: true,
+							// 	text: 'Loading',
+							// 	spinner: 'el-icon-loading',
+							// 	background: 'rgba(0, 0, 0, 0.7)',
+							// })
 							// this.$store.commit('menu/setUserInfo', res.data)
 							// this.$store.setUserInfo(res.data)
 							this.$router.push({ path: '/mattersHandle' })

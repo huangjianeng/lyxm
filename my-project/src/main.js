@@ -2,16 +2,92 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+// import ElementUI from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
 import axios from './utils/axios'
-require('../mock') //引入mock数据，关闭则注释该行
-Vue.use(ElementUI)
+// require('../mock') //引入mock数据，关闭则注释该行
+
+import 'element-ui/lib/theme-chalk/index.css'
+import {
+	Pagination,
+	Dialog,
+	Menu,
+	Submenu,
+	MenuItem,
+	Input,
+	InputNumber,
+	Radio,
+	RadioGroup,
+	Checkbox,
+	Switch,
+	Select,
+	Option,
+	Button,
+	Table,
+	TableColumn,
+	DatePicker,
+	TimeSelect,
+	TimePicker,
+	Form,
+	FormItem,
+	Tabs,
+	TabPane,
+	Tag,
+	Alert,
+	Icon,
+	Row,
+	Col,
+	Spinner,
+	Card,
+	Collapse,
+	CollapseItem,
+	Header,
+	Main,
+	Drawer,
+	Autocomplete,
+} from 'element-ui'
+Vue.use(Autocomplete)
+Vue.use(Drawer)
+Vue.use(Pagination)
+Vue.use(Dialog)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(Input)
+Vue.use(InputNumber)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(Checkbox)
+Vue.use(Switch)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(Button)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(DatePicker)
+Vue.use(TimeSelect)
+Vue.use(TimePicker)
+Vue.use(Form)
+Vue.use(FormItem)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Tag)
+Vue.use(Alert)
+Vue.use(Icon)
+Vue.use(Row)
+Vue.use(Col)
+Vue.use(Spinner)
+Vue.use(Card)
+Vue.use(Collapse)
+Vue.use(CollapseItem)
+Vue.use(Header)
+Vue.use(Main)
+// Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 import * as echarts from 'echarts/core'
 // 引入柱状图图表，图表后缀都为 Chart
-import { BarChart, LineChart, PieChart } from 'echarts/charts'
+import { PieChart } from 'echarts/charts'
 // 引入提示框，标题，直角坐标系，数据集，内置数据转换器组件，组件后缀都为 Component
 import {
 	TitleComponent,
@@ -34,8 +110,6 @@ echarts.use([
 	DatasetComponent,
 	TransformComponent,
 	LegendComponent,
-	BarChart,
-	LineChart,
 	PieChart,
 	LabelLayout,
 	UniversalTransition,

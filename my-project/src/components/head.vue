@@ -46,7 +46,8 @@ export default {
 			admin_level: null,
 			total: 0,
 			userName: this.$store.state.menu.userInfo.username,
-			userDepartment: '自然规划局',
+			userDepartment: '',
+			departmentOptions: [],
 		}
 	},
 	mounted() {
@@ -60,6 +61,20 @@ export default {
 				const data = res.data || []
 				this.messageTotal = data.length
 				this.tableData = data
+			})
+			this.$axios.get('/dept/query', {}).then((res) => {
+				this.departmentOptions = res.data
+				let deptId = this.$store.state.menu.userInfo.deptId
+				this.departmentOptions.forEach((v) => {
+					if (v.id == deptId) {
+						this.userDepartment = v.name
+					}
+				})
+				// this.$message({
+				// 	message: '成功',
+				// 	type: 'success',
+				// })
+				// this.$router.go(-1)
 			})
 		},
 		showMessage() {

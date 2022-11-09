@@ -108,6 +108,48 @@ export default {
 			return year + month
 		},
 		getData() {
+			let params = {
+				startDate: this.getYearMonth(this.searchData.month),
+				endDate: this.getYearMonth(this.searchData.month),
+				...this.pageParams,
+				frequency: 1,
+				deptId: this.deptId,
+			}
+			this.$axios.post('/declaration/query', params).then((res) => {
+				let params2 = {
+					currentPage: 1,
+					pageSize: 999,
+				}
+				this.$axios.post('/matter/query', params2).then((res2) => {
+					// console.log(res)
+					// this.total = result.data.total
+					let arr = []
+					res2.data.data.forEach((v) => {
+						if ((!this.deptId || v.deptId == this.deptId) && v.frequency == 1) {
+							let item = res.data.data.find((vv) => {
+								console.log(vv)
+								return vv.matterId == v.id
+							})
+							if (item) {
+								arr.push({
+									// ...item,
+									name: item.matterName,
+									value: item.amount,
+								})
+							} else {
+								arr.push({
+									value: 0,
+									name: v.name,
+								})
+							}
+						}
+					})
+					this.tableData = arr
+					this.initEchars()
+				})
+			})
+		},
+		getData1() {
 			// POST / declaration / query
 			console.log(this.searchData)
 			let params = {

@@ -194,9 +194,8 @@ export default {
 			let params = {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
-				currentPage: 1,
+				...this.pageParams,
 				deptId: this.deptId,
-				pageSize: 999,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				let arr = []
@@ -240,7 +239,8 @@ export default {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
 				deptId: this.deptId,
-				...this.pageParams,
+				currentPage: 1,
+				pageSize: 999,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
@@ -251,6 +251,7 @@ export default {
 					'月' +
 					'上报数量'
 				let arr = []
+				console.log(this.sheet[0])
 				this.eventOptions.forEach((v) => {
 					if (!this.deptId || v.deptId == this.deptId) {
 						let item = res.data.data.find((vv) => {
@@ -323,7 +324,7 @@ export default {
 					this.search()
 				})
 			} else if (this.modelTitile == '编辑') {
-				this.$axios.post('/declaration/update', params).then(() => {
+				this.$axios.post('/declaration/save', params).then(() => {
 					this.dialogVisible = false
 					this.search()
 				})

@@ -251,8 +251,8 @@ export default {
 </script>
 <style scoped>
 #main {
-	width: 700px;
-	height: 600px;
+	width: 1400px;
+	height: 700px;
 }
 .box {
 	margin: 10px;

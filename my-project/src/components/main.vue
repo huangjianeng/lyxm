@@ -20,7 +20,7 @@
 				<i class="el-icon-document"></i>
 				<span slot="title">事项列表</span>
 			</el-menu-item>
-			<el-menu-item index="/highEvent">
+			<el-menu-item index="/highEvent" v-if="$store.state.menu.userInfo.superAdmin == 1">
 				<i class="el-icon-document"></i>
 				<span slot="title">高频事项统计</span>
 			</el-menu-item>

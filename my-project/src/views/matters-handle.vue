@@ -49,7 +49,7 @@
 			<el-table-column fixed="right" label="操作" width="140">
 				<template slot-scope="scope">
 					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
-					<el-button type="text" @click="editClick(scope.row)" size="small">编辑</el-button>
+					<el-button type="text" @click="editClick(scope.row)" size="small">申报</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -71,6 +71,7 @@
 						style="width: 100%"
 						:value="formData.matterName"
 						@change="changeEvent"
+						:disabled="modelTitile == '编辑'"
 						placeholder="请选择"
 					>
 						<el-option
@@ -344,9 +345,13 @@ export default {
 			this.dialogVisible = false
 		},
 		handleSizeChange(val) {
+			this.pageParams.pageSize = val
+			this.getData()
 			console.log(`每页 ${val} 条`)
 		},
 		handleCurrentChange(val) {
+			this.pageParams.currentPage = val
+			this.getData()
 			console.log(`当前页: ${val}`)
 		},
 	},

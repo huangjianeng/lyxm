@@ -41,8 +41,10 @@
 			<!-- <el-table-column prop="area" label="赋权上级单位"> </el-table-column> -->
 			<el-table-column align="center" label="操作" width="100">
 				<template slot-scope="scope">
-					<span class="hover_a" @click="editItem(scope.row)">编辑</span>
-					<span class="hover_a" @click="deleteItem(scope.row)">删除</span>
+					<template v-if="scope.row.deptId">
+						<span class="hover_a" @click="editItem(scope.row)">编辑</span>
+						<span class="hover_a" @click="deleteItem(scope.row)">删除</span>
+					</template>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -57,9 +59,9 @@
 			>
 			</el-pagination>
 		</div>
-		<el-dialog :title="modelTitle" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
-			<el-form label-position="right" label-width="120px" :model="formData">
-				<el-form-item label="部门">
+		<el-dialog :title="modelTitle"  :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+			<el-form label-position="right" ref="ruleForm" label-width="120px" :model="formData" :rules="rules">
+				<el-form-item label="部门" prop="deptId">
 					<!-- <el-input v-model="formData.department"></el-input> -->
 					<el-select
 						style="width: 100%"
@@ -76,10 +78,10 @@
 						</el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="用户名">
+				<el-form-item label="用户名" prop="username">
 					<el-input v-model="formData.username"></el-input>
 				</el-form-item>
-				<el-form-item label="密码">
+				<el-form-item label="密码" prop="password">
 					<el-input v-model="formData.password"></el-input>
 				</el-form-item>
 			</el-form>
@@ -111,6 +113,11 @@ export default {
 				username: '',
 				password: '',
 				deptId: '',
+			},
+			rules: {
+				username: [{ required: true, message: '请输入'}],
+				password: [{ required: true, message: '请输入' }],
+				deptId: [{ required: true, message: '请选择', trigger: 'change' }],
 			},
 			total: 0,
 			pageParams: {
@@ -167,23 +174,30 @@ export default {
 			this.dialogVisible = true
 		},
 		affirm() {
-			let params = {
-				...this.formData,
-				superAdmin: 0, //是否为超级管理员(0：否 1：是)
-			}
-			if (this.modelTitle == '新增') {
-				this.$axios.post('/user/doRegister', params).then(() => {
-					this.dialogVisible = false
-					this.getData()
-				})
-			} else if (this.modelTitle == '编辑') {
-				delete params.superAdmin
-				params.id = this.editrow.id
-				this.$axios.post('/user/update', params).then(() => {
-					this.dialogVisible = false
-					this.getData()
-				})
-			}
+			this.$refs['ruleForm'].validate((valid) => {
+				if (valid) {
+					let params = {
+						...this.formData,
+						superAdmin: 0, //是否为超级管理员(0：否 1：是)
+					}
+					if (this.modelTitle == '新增') {
+						this.$axios.post('/user/doRegister', params).then(() => {
+							this.dialogVisible = false
+							this.getData()
+						})
+					} else if (this.modelTitle == '编辑') {
+						delete params.superAdmin
+						params.id = this.editrow.id
+						this.$axios.post('/user/update', params).then(() => {
+							this.dialogVisible = false
+							this.getData()
+						})
+					}
+				} else {
+					console.log('error submit!!')
+					return false
+				}
+			})
 		},
 		handleClose() {
 			this.dialogVisible = false

@@ -48,6 +48,7 @@ export default {
 			userName: this.$store.state.menu.userInfo.username,
 			userDepartment: '',
 			departmentOptions: [],
+			tableData:[]
 		}
 	},
 	mounted() {

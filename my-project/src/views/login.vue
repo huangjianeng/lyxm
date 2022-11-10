@@ -111,6 +111,7 @@ export default {
 					})
 				} else {
 					// 弹出第一个错误信息
+					// console.log(errorObj)
 					this.$message.error(Object.values(errorObj)[0][0].message)
 					return false
 				}

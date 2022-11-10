@@ -76,6 +76,7 @@
 						v-model="formData.deptName"
 						@change="changeDe"
 						placeholder="请选择"
+						value-key="id"
 					>
 						<el-option
 							v-for="item in departmentOptions"

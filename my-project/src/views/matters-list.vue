@@ -32,6 +32,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item style="float: right">
+					<input type="file" @change="changeFile" id="file" /><br />
 					<el-button size="small" type="primary" @click="search">查询</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
@@ -147,6 +148,54 @@ export default {
 		this.init()
 	},
 	methods: {
+		async changeFile(val) {
+			console.log('111', val)
+			var file = document.querySelector('#file').files[0]
+			var type = file.name.split('.')
+			if (type[type.length - 1] !== 'xlsx' && type[type.length - 1] !== 'xls') {
+				alert('只能选择excel文件导入')
+				return false
+			}
+			const reader = new FileReader()
+			let all = []
+			reader.readAsBinaryString(file)
+			reader.onload = (e) => {
+				const data = e.target.result
+				const zzexcel = window.XLS.read(data, {
+					type: 'binary',
+				})
+				const result = []
+				for (let i = 0; i < zzexcel.SheetNames.length; i++) {
+					const newData = window.XLS.utils.sheet_to_json(zzexcel.Sheets[zzexcel.SheetNames[i]])
+					result.push(...newData)
+				}
+				console.log(this.departmentOptions)
+				result.forEach((v, i) => {
+					if (i > 20) {
+						let item = this.departmentOptions.find((vv) => v.dep == vv.name)
+
+						if (item == undefined) {
+							console.log('222',item)
+						}
+						v.depId = item?.id
+						all.push(v)
+					}
+				})
+				all.forEach(async (v) => {
+					let params = {
+						name: v.name,
+						deptId: v.depId,
+						deptName: v.dep,
+						supDept: v.unit,
+						frequency : v.is.toString(),
+					}
+					console.log('333',params)
+					await this.$axios.post('/matter/insert', params).then(() => {})
+				})
+
+				console.log('result', this, result, all)
+			}
+		},
 		init() {
 			this.getDeptName()
 			this.getData()

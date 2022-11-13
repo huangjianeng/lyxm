@@ -89,7 +89,7 @@ service.defaults.retryDelay = 1000
 // request拦截器
 service.interceptors.request.use(
 	(config) => {
-		console.log(store)
+		// console.log(store)
 		if (store.state.menu.userInfo && store.state.menu.userInfo.token) {
 			config.headers = {
 				'token': store.state.menu.userInfo.token, //携带权限参数

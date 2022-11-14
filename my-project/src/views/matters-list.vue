@@ -32,7 +32,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item style="float: right">
-					<input type="file" @change="changeFile" id="file" /><br />
+					<!-- <input type="file" @change="changeFile" id="file" /><br /> -->
 					<el-button size="small" type="primary" @click="search">查询</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
@@ -171,12 +171,14 @@ export default {
 				}
 				console.log(this.departmentOptions)
 				result.forEach((v, i) => {
-					if (i > 20) {
+					if (i >= 0) {
 						let item = this.departmentOptions.find((vv) => v.dep == vv.name)
 
 						if (item == undefined) {
-							console.log('222',item)
+							console.log('222', item)
 						}
+						// console.log(item, item.is, item.is == '是')
+						v.is = v.is == '是' ? 1 : 0
 						v.depId = item?.id
 						all.push(v)
 					}
@@ -187,9 +189,9 @@ export default {
 						deptId: v.depId,
 						deptName: v.dep,
 						supDept: v.unit,
-						frequency : v.is.toString(),
+						frequency: v.is,
 					}
-					console.log('333',params)
+					console.log('333', params)
 					await this.$axios.post('/matter/insert', params).then(() => {})
 				})
 

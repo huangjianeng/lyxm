@@ -119,7 +119,7 @@ export default {
 			deptId: this.$store.state.menu.userInfo.deptId,
 			sheet: [
 				{
-					tHeader: ['部门', '事项名称', '月统计上报数量'],
+					tHeader: ['部门', '事项名称', '月统计申报数量'],
 					keys: ['deptName', 'matterName', 'amount'],
 					table: [],
 				},
@@ -252,7 +252,7 @@ export default {
 					'月' +
 					'上报数量'
 				let arr = []
-				console.log(this.sheet[0])
+				// console.log(this.sheet[0])
 				this.eventOptions.forEach((v) => {
 					if (!this.deptId || v.deptId == this.deptId) {
 						let item = res.data.data.find((vv) => {
@@ -276,6 +276,7 @@ export default {
 						}
 					}
 				})
+				console.log(this.sheet[0])
 				this.sheet[0].table = arr
 			})
 		},

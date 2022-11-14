@@ -22,7 +22,18 @@
 						>
 						</el-date-picker></div
 				></el-col>
-				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+				<el-col :span="6"
+					><div class="grid-content bg-purple">
+						<div>部门：</div>
+						<el-select size="small" filterable clearable v-model="deptId" placeholder="部门">
+							<el-option
+								v-for="item in departmentOptions"
+								:key="item.id"
+								:label="item.name"
+								:value="item.id"
+							></el-option>
+						</el-select></div
+				></el-col>
 				<el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
 				<el-col :span="6">
 					<div class="grid-content bg-purple" style="justify-content: flex-end">
@@ -52,6 +63,7 @@ export default {
 	},
 	data() {
 		return {
+			departmentOptions: [],
 			dialogVisible: false,
 			formData: {
 				name: '',
@@ -81,7 +93,7 @@ export default {
 					value: '4',
 				},
 			],
-			deptId: this.$store.state.menu.userInfo.deptId,
+			deptId: this.$store.state.menu.userInfo.deptId || 1,
 			searchData: {
 				month: new Date(),
 				// month: [new Date(new Date().setMonth(new Date().getMonth() - 3)), new Date()],
@@ -91,8 +103,20 @@ export default {
 	},
 	mounted() {
 		this.init()
+		this.getDeptName()
 	},
 	methods: {
+		getDeptName() {
+			// GET /dept/query
+			this.$axios.get('/dept/query', {}).then((res) => {
+				this.departmentOptions = res.data
+				// this.$message({
+				// 	message: '成功',
+				// 	type: 'success',
+				// })
+				// this.$router.go(-1)
+			})
+		},
 		init() {
 			this.getData()
 		},

@@ -31,8 +31,24 @@
 						></el-option>
 					</el-select>
 				</el-form-item>
+				<el-form-item>
+					<el-input
+						size="small"
+						clearable
+						v-model="searchData.name"
+						placeholder="请输入事项名称"
+					></el-input>
+				</el-form-item>
+				<el-form-item>
+					<el-input
+						size="small"
+						clearable
+						v-model="searchData.name"
+						placeholder="请输入事项名称"
+					></el-input>
+				</el-form-item>
 				<el-form-item style="float: right">
-					<input type="file" @change="changeFile" id="file" /><br />
+					<!-- <input type="file" @change="changeFile" id="file" /><br /> -->
 					<el-button size="small" type="primary" @click="search">查询</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
@@ -42,14 +58,18 @@
 			<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 		</div> -->
 		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="deptName" label="部门" min-width="180"> </el-table-column>
 			<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
-			<el-table-column prop="supDept" label="赋权上级单位"> </el-table-column>
-			<el-table-column prop="supDept" label="高频事件">
+			<el-table-column prop="matterCode" label="事项编码" min-width="120"> </el-table-column>
+			<el-table-column prop="supDept" label="赋权上级部门" min-width="180"> </el-table-column>
+			<el-table-column prop="matterType" label="事项类型" min-width="120"> </el-table-column>
+			<el-table-column prop="unit" label="承接单位" min-width="180"> </el-table-column>
+			<el-table-column prop="powerMeans" label="赋权方式" min-width="100"> </el-table-column>
+			<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
+			<!-- <el-table-column prop="supDept" label="高频事件">
 				<template slot-scope="scope">
 					<span>{{ scope.row.frequency == 1 ? '是' : '否' }}</span>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column align="center" label="操作" width="100">
 				<template slot-scope="scope">
 					<span class="hover_a" @click="editItem(scope.row)">编辑</span>
@@ -70,7 +90,7 @@
 		</div>
 		<el-dialog :title="modelTitile" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" label-width="120px" :model="formData">
-				<el-form-item label="部门：">
+				<el-form-item label="镇属部门：">
 					<!-- <el-input v-model="formData.department"></el-input> -->
 					<el-select
 						style="width: 100%"
@@ -91,15 +111,27 @@
 				<el-form-item label="事项名称：">
 					<el-input v-model="formData.name"></el-input>
 				</el-form-item>
-				<el-form-item label="赋权上级单位：">
+				<el-form-item label="事项编码：">
+					<el-input v-model="formData.matterCode"></el-input>
+				</el-form-item>
+				<el-form-item label="事项类型：">
+					<el-input v-model="formData.matterType"></el-input>
+				</el-form-item>
+				<el-form-item label="赋权上级部门：">
 					<el-input v-model="formData.supDept"></el-input>
 				</el-form-item>
-				<el-form-item label="高频事件：">
+				<el-form-item label="承接单位：">
+					<el-input v-model="formData.unit"></el-input>
+				</el-form-item>
+				<el-form-item label="赋权方式：">
+					<el-input v-model="formData.powerMeans"></el-input>
+				</el-form-item>
+				<!-- <el-form-item label="高频事件：">
 					<div style="text-align: left">
 						<el-radio v-model="formData.frequency" label="1">是</el-radio>
 						<el-radio v-model="formData.frequency" label="0">否</el-radio>
 					</div>
-				</el-form-item>
+				</el-form-item> -->
 			</el-form>
 			<span slot="footer" class="dialog-footer">
 				<el-button @click="handleClose">取 消</el-button>
@@ -175,7 +207,7 @@ export default {
 						let item = this.departmentOptions.find((vv) => v.dep == vv.name)
 
 						if (item == undefined) {
-							console.log('222',item)
+							console.log('222', item)
 						}
 						v.depId = item?.id
 						all.push(v)
@@ -187,9 +219,9 @@ export default {
 						deptId: v.depId,
 						deptName: v.dep,
 						supDept: v.unit,
-						frequency : v.is.toString(),
+						frequency: v.is.toString(),
 					}
-					console.log('333',params)
+					console.log('333', params)
 					await this.$axios.post('/matter/insert', params).then(() => {})
 				})
 

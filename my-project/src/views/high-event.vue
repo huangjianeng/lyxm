@@ -24,8 +24,8 @@
 				></el-col>
 				<el-col :span="6"
 					><div class="grid-content bg-purple">
-						<div>部门：</div>
-						<el-select size="small" filterable clearable v-model="deptId" placeholder="部门">
+						<div>镇属部门：</div>
+						<el-select size="small" filterable clearable v-model="deptId" placeholder="镇属部门">
 							<el-option
 								v-for="item in departmentOptions"
 								:key="item.id"
@@ -136,7 +136,7 @@ export default {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
 				...this.pageParams,
-				frequency: 1,
+				// frequency: 1,
 				deptId: this.deptId,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
@@ -149,7 +149,7 @@ export default {
 					// this.total = result.data.total
 					let arr = []
 					res2.data.data.forEach((v) => {
-						if ((!this.deptId || v.deptId == this.deptId) && v.frequency == 1) {
+						if (!this.deptId || v.deptId == this.deptId)  {
 							let item = res.data.data.find((vv) => {
 								console.log(vv)
 								return vv.matterId == v.id
@@ -180,7 +180,7 @@ export default {
 				startDate: this.getYearMonth(this.searchData.month),
 				endDate: this.getYearMonth(this.searchData.month),
 				...this.pageParams,
-				frequency: 1,
+				// frequency: 1,
 				deptId: this.deptId,
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
@@ -223,7 +223,7 @@ export default {
 			var myChart = this.$echarts.init(chartDom)
 			var option = {
 				title: {
-					text: '高频事项统计表',
+					text: '事项统计表',
 					left: 'center',
 				},
 				tooltip: {
@@ -235,7 +235,7 @@ export default {
 				},
 				series: [
 					{
-						name: '高频事项统计表',
+						name: '事项统计表',
 						type: 'pie',
 						radius: '50%',
 						data: this.tableData,

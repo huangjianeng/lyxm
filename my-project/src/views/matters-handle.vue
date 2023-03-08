@@ -43,7 +43,7 @@
 			<el-button type="primary" @click="addItem">事项新增</el-button>
 		</div> -->
 		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="deptName" label="部门" min-width="180"> </el-table-column>
+			<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
 			<el-table-column prop="matterName" label="事项名称" min-width="180"> </el-table-column>
 			<el-table-column prop="amount" label="月统计上报数量"> </el-table-column>
 			<el-table-column fixed="right" label="操作" width="140">
@@ -119,7 +119,7 @@ export default {
 			deptId: this.$store.state.menu.userInfo.deptId,
 			sheet: [
 				{
-					tHeader: ['部门', '事项名称', '月统计申报数量'],
+					tHeader: ['镇属部门', '事项名称', '月统计申报数量'],
 					keys: ['deptName', 'matterName', 'amount'],
 					table: [],
 				},

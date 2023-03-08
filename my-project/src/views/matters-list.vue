@@ -48,7 +48,7 @@
 					></el-input>
 				</el-form-item>
 				<el-form-item style="float: right">
-					<input type="file" @change="changeFile" id="file" /><br />
+					<!-- <input type="file" @change="changeFile" id="file" /><br /> -->
 					<el-button size="small" type="primary" @click="search">查询</el-button>
 					<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 				</el-form-item>
@@ -191,7 +191,7 @@ export default {
 			const reader = new FileReader()
 			let all = []
 			reader.readAsBinaryString(file)
-			reader.onload = (e) => {
+			reader.onload = async (e) => {
 				const data = e.target.result
 				const zzexcel = window.XLS.read(data, {
 					type: 'binary',
@@ -217,17 +217,11 @@ export default {
 				})
 				console.log(result)
 				let paramsList = []
-				let obj = {}
-				let obj1 = {}
-				let obj2 = {}
-				all.forEach(async (v) => {
-					if(obj1[v.name]){
-						obj2[v.name] = 3
-					}else if(obj[v.name]){
-						obj1[v.name] = 2
-					}else{
-						obj[v.name] = 1
-					}
+				let obj = {
+					length:1,
+				}
+				for(let i=0; i <all.length; i++) {
+					let v = all[i]
 					let params = {
 						name: v.name,
 						matterCode: v.matterCode,
@@ -240,10 +234,10 @@ export default {
 						// frequency: v.is.toString(),
 					}
 					paramsList.push(params)
-					// console.log('333', params)
-					// await this.$axios.post('/matter/insert', params).then(() => {})
-				})
-				console.log(obj2,obj1,result,paramsList)
+					console.log('排序', i)
+					await this.$axios.post('/matter/insert', params).then(() => {})
+				}
+				console.log(obj,result,paramsList)
 				// console.log('result', this, result, all)
 			}
 		},

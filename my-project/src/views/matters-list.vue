@@ -57,26 +57,28 @@
 		<!-- <div class="btn_box">
 			<el-button type="primary" size="small" @click="addItem">事项新增</el-button>
 		</div> -->
-		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
-			<el-table-column prop="matterCode" label="事项编码" min-width="120"> </el-table-column>
-			<el-table-column prop="supDept" label="赋权上级部门" min-width="180"> </el-table-column>
-			<el-table-column prop="matterType" label="事项类型" min-width="120"> </el-table-column>
-			<el-table-column prop="unit" label="承接单位" min-width="180"> </el-table-column>
-			<el-table-column prop="powerMeans" label="赋权方式" min-width="100"> </el-table-column>
-			<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
-			<!-- <el-table-column prop="supDept" label="高频事件">
+		<div class="table_box">
+			<el-table :data="tableData" height="100%" style="width: 100%" border>
+				<el-table-column prop="name" label="事项名称" min-width="180"> </el-table-column>
+				<el-table-column prop="matterCode" label="事项编码" min-width="120"> </el-table-column>
+				<el-table-column prop="supDept" label="赋权上级部门" min-width="180"> </el-table-column>
+				<el-table-column prop="matterType" label="事项类型" min-width="120"> </el-table-column>
+				<el-table-column prop="unit" label="承接单位" min-width="180"> </el-table-column>
+				<el-table-column prop="powerMeans" label="赋权方式" min-width="100"> </el-table-column>
+				<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
+				<!-- <el-table-column prop="supDept" label="高频事件">
 				<template slot-scope="scope">
 					<span>{{ scope.row.frequency == 1 ? '是' : '否' }}</span>
 				</template>
 			</el-table-column> -->
-			<el-table-column align="center" label="操作" width="100">
-				<template slot-scope="scope">
-					<span class="hover_a" @click="editItem(scope.row)">编辑</span>
-					<span class="hover_a" @click="deleteItem(scope.row)">删除</span>
-				</template>
-			</el-table-column>
-		</el-table>
+				<el-table-column align="center" label="操作" width="100">
+					<template slot-scope="scope">
+						<span class="hover_a" @click="editItem(scope.row)">编辑</span>
+						<span class="hover_a" @click="deleteItem(scope.row)">删除</span>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
 		<div class="page_box">
 			<el-pagination
 				@size-change="handleSizeChange"
@@ -218,16 +220,16 @@ export default {
 				console.log(result)
 				let paramsList = []
 				let obj = {
-					length:1,
+					length: 1,
 				}
-				for(let i=0; i <all.length; i++) {
+				for (let i = 0; i < all.length; i++) {
 					let v = all[i]
 					let params = {
 						name: v.name,
 						matterCode: v.matterCode,
 						deptId: v.depId,
 						deptName: v.dep,
-						powerMeans:v.powerMeans,
+						powerMeans: v.powerMeans,
 						matterType: v.matterType,
 						unit: v.unit,
 						supDept: v.supDept,
@@ -237,7 +239,7 @@ export default {
 					console.log('排序', i)
 					await this.$axios.post('/matter/insert', params).then(() => {})
 				}
-				console.log(obj,result,paramsList)
+				console.log(obj, result, paramsList)
 				// console.log('result', this, result, all)
 			}
 		},
@@ -362,12 +364,18 @@ export default {
 	display: flex;
 }
 .box {
-	margin: 10px;
+	box-sizing: border-box;
+	padding: 10px;
+	width: 100%;
+	height: 100%;
 }
 .btn_box {
 	display: flex;
 	justify-content: flex-end;
 	padding: 10px;
+}
+.table_box {
+	height: calc(100% - 120px);
 }
 .page_box {
 	display: flex;

@@ -42,17 +42,25 @@
 		<!-- <div class="btn_box">
 			<el-button type="primary" @click="addItem">事项新增</el-button>
 		</div> -->
-		<el-table :data="tableData" style="width: 100%" border>
-			<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
-			<el-table-column prop="matterName" label="事项名称" min-width="180"> </el-table-column>
-			<el-table-column prop="amount" label="月统计上报数量"> </el-table-column>
-			<el-table-column fixed="right" label="操作" width="140">
-				<template slot-scope="scope">
-					<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
-					<el-button type="text" @click="editClick(scope.row)" size="small">申报</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
+		<div class="table_box">
+			<el-table :data="tableData" style="width: 100%" height="100%" border>
+				<!-- <el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column> -->
+				<el-table-column prop="matterName" label="事项名称" min-width="180"> </el-table-column>
+				<el-table-column prop="matterCode" label="事项编码" min-width="120"> </el-table-column>
+				<el-table-column prop="supDept" label="赋权上级部门" min-width="180"> </el-table-column>
+				<el-table-column prop="matterType" label="事项类型" min-width="120"> </el-table-column>
+				<el-table-column prop="unit" label="承接单位" min-width="180"> </el-table-column>
+				<el-table-column prop="powerMeans" label="赋权方式" min-width="100"> </el-table-column>
+				<el-table-column prop="deptName" label="镇属部门" min-width="180"> </el-table-column>
+				<el-table-column prop="amount" label="月统计上报数量"> </el-table-column>
+				<el-table-column fixed="right" label="操作" width="140">
+					<template slot-scope="scope">
+						<!-- <el-button @click="handleClick(scope.row)" type="text" size="small">申报</el-button> -->
+						<el-button type="text" @click="editClick(scope.row)" size="small">申报</el-button>
+					</template>
+				</el-table-column>
+			</el-table>
+		</div>
 		<div class="page_box">
 			<el-pagination
 				@size-change="handleSizeChange"
@@ -64,13 +72,20 @@
 			>
 			</el-pagination>
 		</div>
-		<el-dialog :title="modelTitile" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+		<el-dialog
+			:title="modelTitile"
+			:visible.sync="dialogVisible"
+			width="900px"
+			:before-close="handleClose"
+		>
 			<el-form label-position="right" label-width="120px" :model="formData">
 				<el-form-item label="事项名称：">
 					<el-select
 						style="width: 100%"
 						:value="formData.matterName"
+						popper-class="select_wrap"
 						@change="changeEvent"
+						filterable
 						:disabled="modelTitile == '编辑'"
 						placeholder="请选择"
 					>
@@ -163,7 +178,6 @@ export default {
 				currentPage: 1,
 				pageSize: 10,
 			}
-
 			this.getData()
 			this.getSheetData()
 		},
@@ -182,7 +196,6 @@ export default {
 			}
 			this.$axios.post('/matter/query', params).then((res) => {
 				this.eventOptions = res.data.data
-				this.total = res.data.total
 			})
 		},
 		getDeptName() {
@@ -200,37 +213,42 @@ export default {
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				let arr = []
+				console.log(res)
 				let params2 = {
 					...this.pageParams,
 					deptId: this.deptId,
 				}
 				this.$axios.post('/matter/query', params2).then((res2) => {
-					let arr = []
-					res2.data.data.forEach((v) => {
-						if (!this.deptId || v.deptId == this.deptId) {
-							let item = res.data.data.find((vv) => {
-								return vv.matterId == v.id
-							})
-							if (item) {
-								arr.push({
-									...item,
-								})
-							} else {
-								arr.push({
-									amount: 0,
-									deptId: v.deptId,
-									deptName: v.deptName,
-									frequency: v.frequency,
-									mondiff: v.supDept,
-									matterName: v.name,
-									matterId: v.id,
-								})
-							}
-						}
+					console.log(res2)
+					// let arr = []
+					res.data.data.forEach((v) => {
+						arr.push({
+							...v,
+						})
+						// if (!this.deptId || v.deptId == this.deptId) {
+						// 	let item = res.data.data.find((vv) => {
+						// 		return vv.matterId == v.id
+						// 	})
+						// 	if (item) {
+						// 		arr.push({
+						// 			...v,
+						// 		})
+						// 	} else {
+						// 		arr.push({
+						// 			amount: 0,
+						// 			deptId: v.deptId,
+						// 			deptName: v.deptName,
+						// 			frequency: v.frequency,
+						// 			mondiff: v.supDept,
+						// 			matterName: v.name,
+						// 			matterId: v.id,
+						// 		})
+						// 	}
+						// }
 					})
-					this.tableData = arr
+					// this.tableData = arr
 				})
-
+				this.total = res.data.total
 				this.tableData = arr
 			})
 		},
@@ -358,9 +376,19 @@ export default {
 	},
 }
 </script>
+<style>
+.select_wrap .el-select-dropdown__item {
+	height: auto;
+	white-space: normal;
+	width: 720px;
+}
+</style>
 <style scoped>
 .box {
-	margin: 10px;
+	box-sizing: border-box;
+	padding: 10px;
+	width: 100%;
+	height: 100%;
 }
 .search_box {
 	padding: 10px;
@@ -369,6 +397,9 @@ export default {
 	display: flex;
 	justify-content: flex-end;
 	padding: 10px;
+}
+.table_box {
+	height: calc(100% - 120px);
 }
 .page_box {
 	display: flex;

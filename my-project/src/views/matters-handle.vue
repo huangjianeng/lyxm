@@ -133,9 +133,34 @@ export default {
 		return {
 			deptId: this.$store.state.menu.userInfo.deptId,
 			sheet: [
+				// 				supDept: v.supDept,
+				// matterName: v.name,
+				// matterId: v.id,
+				// matterCode: v.matterCode,
+				// matterType: v.matterType,
+				// unit: v.unit,
+				// powerMeans: v.powerMeans,
 				{
-					tHeader: ['镇属部门', '事项名称', '月统计申报数量'],
-					keys: ['deptName', 'matterName', 'amount'],
+					tHeader: [
+						'事项名称',
+						'事项编码',
+						'事项类型',
+						'赋权上级部门',
+						'承接单位',
+						'赋权方式',
+						'镇属部门',
+						'月统计申报数量',
+					],
+					keys: [
+						'matterName',
+						'matterCode',
+						'matterType',
+						'supDept',
+						'unit',
+						'powerMeans',
+						'deptName',
+						'amount',
+					],
 					table: [],
 				},
 			],
@@ -163,14 +188,14 @@ export default {
 			eventOptions: [],
 		}
 	},
-	mounted() {
+	async mounted() {
+		await this.getEventList()
 		this.init()
 	},
 	methods: {
 		async init() {
-			this.getData()
-			this.getEventList()
-			this.getSheetData()
+			await this.getData()
+			await this.getSheetData()
 			this.getDeptName()
 		},
 		search() {
@@ -221,34 +246,32 @@ export default {
 				this.$axios.post('/matter/query', params2).then((res2) => {
 					console.log(res2)
 					// let arr = []
-					res.data.data.forEach((v) => {
-						arr.push({
-							...v,
-						})
-						// if (!this.deptId || v.deptId == this.deptId) {
-						// 	let item = res.data.data.find((vv) => {
-						// 		return vv.matterId == v.id
-						// 	})
-						// 	if (item) {
-						// 		arr.push({
-						// 			...v,
-						// 		})
-						// 	} else {
-						// 		arr.push({
-						// 			amount: 0,
-						// 			deptId: v.deptId,
-						// 			deptName: v.deptName,
-						// 			frequency: v.frequency,
-						// 			mondiff: v.supDept,
-						// 			matterName: v.name,
-						// 			matterId: v.id,
-						// 		})
-						// 	}
-						// }
+					res2.data.data.forEach((v) => {
+						// arr.push({
+						// 	...v,
+						// })
+						if (!this.deptId || v.deptId == this.deptId) {
+							let item = res.data.data.find((vv) => {
+								return vv.matterId == v.id
+							})
+							arr.push({
+								amount: item?.amount || 0,
+								deptId: v.deptId,
+								deptName: v.deptName,
+								frequency: v.frequency,
+								supDept: v.supDept,
+								matterName: v.name,
+								matterId: v.id,
+								matterCode: v.matterCode,
+								matterType: v.matterType,
+								unit: v.unit,
+								powerMeans: v.powerMeans,
+							})
+						}
 					})
-					// this.tableData = arr
+					this.total = res2.data.total
 				})
-				this.total = res.data.total
+				console.log(arr, '222')
 				this.tableData = arr
 			})
 		},
@@ -263,7 +286,7 @@ export default {
 			}
 			this.$axios.post('/declaration/query', params).then((res) => {
 				console.log(res)
-				this.sheet[0].tHeader[2] =
+				this.sheet[0].tHeader[this.sheet[0].tHeader.length - 1] =
 					this.searchData.month.getFullYear() +
 					'年' +
 					(this.searchData.month.getMonth() + 1) +
@@ -276,26 +299,23 @@ export default {
 						let item = res.data.data.find((vv) => {
 							return vv.matterId == v.id
 						})
-						if (item) {
-							arr.push({
-								...item,
-								amount: Number(item.amount),
-							})
-						} else {
-							arr.push({
-								amount: 0,
-								deptId: v.deptId,
-								deptName: v.deptName,
-								frequency: v.frequency,
-								mondiff: v.supDept,
-								matterName: v.name,
-								matterId: v.id,
-							})
-						}
+						arr.push({
+							amount: item?.amount || 0,
+							deptId: v.deptId,
+							deptName: v.deptName,
+							frequency: v.frequency,
+							supDept: v.supDept,
+							matterName: v.name,
+							matterId: v.id,
+							matterCode: v.matterCode,
+							matterType: v.matterType,
+							unit: v.unit,
+							powerMeans: v.powerMeans,
+						})
 					}
 				})
-				console.log(this.sheet[0])
 				this.sheet[0].table = arr
+				console.log(this.shee)
 			})
 		},
 		getYearMonth(date) {

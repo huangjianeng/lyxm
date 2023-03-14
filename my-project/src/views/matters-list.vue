@@ -31,22 +31,6 @@
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item>
-					<el-input
-						size="small"
-						clearable
-						v-model="searchData.name"
-						placeholder="请输入事项名称"
-					></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-input
-						size="small"
-						clearable
-						v-model="searchData.name"
-						placeholder="请输入事项名称"
-					></el-input>
-				</el-form-item>
 				<el-form-item style="float: right">
 					<!-- <input type="file" @change="changeFile" id="file" /><br /> -->
 					<el-button size="small" type="primary" @click="search">查询</el-button>

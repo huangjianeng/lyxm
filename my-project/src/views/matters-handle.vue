@@ -222,11 +222,11 @@ export default {
 			}
 			await this.$axios.post('/matter/query', params).then((res) => {
 				this.eventOptions = res.data.data
-				let eventIds = []
-				this.eventOptions.forEach((v) => {
-					eventIds.push(v.id)
-				})
-				this.eventIds = eventIds
+				// let eventIds = []
+				// this.eventOptions.forEach((v) => {
+				// 	eventIds.push(v.id)
+				// })
+				// this.eventIds = eventIds
 			})
 		},
 		getDeptName() {
@@ -249,24 +249,24 @@ export default {
 				// 	...this.pageParams,
 				// 	deptId: this.deptId,
 				// }
-				res.data.data.forEach((item) => {
-					let index = this.eventIds.indexOf(item.matterId)
-					let v = this.eventOptions[index]
-					console.log('this.eventOptions',index,this.eventOptions)
-					arr.push({
-						amount: item?.amount || 0,
-						deptId: v.deptId,
-						deptName: v.deptName,
-						frequency: v.frequency,
-						supDept: v.supDept,
-						matterName: v.name,
-						matterId: v.id,
-						matterCode: v.matterCode,
-						matterType: v.matterType,
-						unit: v.unit,
-						powerMeans: v.powerMeans,
-					})
-				})
+				// res.data.data.forEach((item) => {
+				// 	let index = this.eventIds.indexOf(item.matterId)
+				// 	let v = this.eventOptions[index]
+				// 	console.log('this.eventOptions',index,this.eventOptions)
+				// 	arr.push({
+				// 		amount: item?.amount || 0,
+				// 		deptId: v.deptId,
+				// 		deptName: v.deptName,
+				// 		frequency: v.frequency,
+				// 		supDept: v.supDept,
+				// 		matterName: v.name,
+				// 		matterId: v.id,
+				// 		matterCode: v.matterCode,
+				// 		matterType: v.matterType,
+				// 		unit: v.unit,
+				// 		powerMeans: v.powerMeans,
+				// 	})
+				// })
 				// this.$axios.post('/matter/query', params2).then((res2) => {
 				// 	console.log(res2)
 				// 	// let arr = []
@@ -297,7 +297,7 @@ export default {
 				// })
 				console.log(arr, '222')
 				this.total = res.data.total
-				this.tableData = arr
+				this.tableData = res.data.data
 			})
 		},
 		getSheetData() {

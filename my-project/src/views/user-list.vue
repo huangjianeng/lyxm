@@ -41,10 +41,8 @@
 			<!-- <el-table-column prop="area" label="赋权上级单位"> </el-table-column> -->
 			<el-table-column align="center" label="操作" width="100">
 				<template slot-scope="scope">
-					<template v-if="scope.row.deptId">
-						<span class="hover_a" @click="editItem(scope.row)">编辑</span>
-						<span class="hover_a" @click="deleteItem(scope.row)">删除</span>
-					</template>
+					<span class="hover_a" @click="editItem(scope.row)">编辑</span>
+					<span v-if="scope.row.deptId" class="hover_a" @click="deleteItem(scope.row)">删除</span>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -61,7 +59,7 @@
 		</div>
 		<el-dialog :title="modelTitle"  :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
 			<el-form label-position="right" ref="ruleForm" label-width="120px" :model="formData" :rules="rules">
-				<el-form-item label="部门" prop="deptId">
+				<el-form-item label="部门" prop="deptId" v-if="this.editrow.deptId || this.modelTitle == '新增'">
 					<!-- <el-input v-model="formData.department"></el-input> -->
 					<el-select
 						style="width: 100%"
